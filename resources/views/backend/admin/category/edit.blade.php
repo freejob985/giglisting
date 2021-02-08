@@ -25,7 +25,7 @@
         <div class="col-12">
             <div class="row">
                 <div class="col-12 col-md-10 col-lg-6">
-                    <form method="POST" action="{{ route('admin.categories.update', $category) }}" class="">
+                    <form method="POST" action="{{ route('admin.categories.update', $category) }}" class=""   enctype="multipart/form-data">
                         @csrf
                         @method('PUT')
                         <div class="row form-group">
