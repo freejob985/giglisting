@@ -224,11 +224,38 @@ class CategoryController extends Controller
         if (count($validate_error) > 0) {
             throw ValidationException::withMessages($validate_error);
         } else {
+            //dd("Trace ( 1 )");
+            if ($request->Type == "Link") {
+                $Type = $request->Link;
+    
+            } else if ($request->Type == "photo") {
+    
+                if ($request->hasFile('photo')) {
+                    $file = $request->photo;
+                    $extension = $file->getClientOriginalExtension();
+                    $Type = rand(111, 99999) . "_mrbean" . '.' . $extension;
+                    //$file->move("assets/front/img/Logo/", $filename);
+                    $file->move(public_path() . '/files/', $Type);
+    
+                } else {
+    
+                    //  $filename = "";
+                    $Type = "";
+    
+                }
+            } else {
+                $Type = $request->category_icon;
+            }
+
+            
             $category->category_name = $category_name;
             $category->category_slug = $category_slug;
             $category->category_icon = $category_icon;
             $category->category_parent_id = $category_parent_id;
             $category->category_description = $category_description;
+            $category->Type = $request->Type;
+            $category->Link = $request->Link;
+            $category->photo = $Type;
             $category->save();
 
             \Session::flash('flash_message', __('alert.category-updated'));
