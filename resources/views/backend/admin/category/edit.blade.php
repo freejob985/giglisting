@@ -205,7 +205,7 @@
 <script>
   $(document).ready(function(){
    
-    var day== $(".Type").children("option:selected").val();
+    var day= $(".Type").children("option:selected").val();
 
           if(day==="photo"){
                $(".photo").show();
