@@ -34,9 +34,9 @@
                                 <label class="text-black" for="category_parent_id">{{ __('categories.choose-parent-cat') }}</label>
                                 <select class="custom-select @error('category_parent_id') is-invalid @enderror Type " name="Type">
                                     <option value="0">Choose the type of download</option>
-                                    <option value="Link">Link</option>
-                                     <option value="photo">photo</option>
-                                      <option value="ICON">ICON</option>
+                                    <option value="Link" {{ ( $category->Type == 'Link') ? 'selected' : '' }}>Link</option>
+                                     <option value="photo" {{ ( $category->Type == 'photo') ? 'selected' : '' }}>photo</option>
+                                      <option value="ICON" {{ ( $category->Type == 'ICON') ? 'selected' : '' }}>ICON</option>
                                 </select>
                                 @error('category_parent_id')
                                 <span class="invalid-tooltip">
@@ -90,7 +90,7 @@
                         <div class="row form-group Link">
                             <div class="col-md-12">
                                 <label class="text-black" for="Link">Link</label>
-                                <input id="Link" type="text" class="form-control @error('Link') is-invalid @enderror " name="Link" value="{{ old('Link') }}">
+                                <input id="Link" type="text" class="form-control @error('Link') is-invalid @enderror " name="Link" value="{{ $category->Link }}">
                                 <small class="text-muted">
         
                                 </small>
@@ -167,6 +167,7 @@
             </div>
         </div>
     </div>
+    <span class="icon"><span><img class="img-responsive" src="{{Request::root()}}/laravel_project/public/files/{{ $category->photo }}" alt="Chania"></span></span>
 
     <!-- Modal -->
     <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModal" aria-hidden="true">
@@ -194,14 +195,14 @@
     </div>
 
 
+    
 @endsection
 
 @section('scripts')
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <script>
   $(document).ready(function(){
-          $(".photo").hide();
-            $(".Link").hide();
+   
           $(".Type").change(function(){
           var day=  this.value;
           if(day==="photo"){
