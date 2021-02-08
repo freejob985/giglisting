@@ -29,6 +29,23 @@
                         @csrf
                         @method('PUT')
                         <div class="row form-group">
+
+                            <div class="col-md-12">
+                                <label class="text-black" for="category_parent_id">{{ __('categories.choose-parent-cat') }}</label>
+                                <select class="custom-select @error('category_parent_id') is-invalid @enderror Type " name="Type">
+                                    <option value="0">Choose the type of download</option>
+                                    <option value="Link">Link</option>
+                                     <option value="photo">photo</option>
+                                      <option value="ICON">ICON</option>
+                                </select>
+                                @error('category_parent_id')
+                                <span class="invalid-tooltip">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="row form-group">
                             <div class="col-md-12">
                                 <label for="category_name" class="text-black">{{ __('backend.category.category-name') }}</label>
                                 <input id="category_name" type="text" class="form-control @error('category_name') is-invalid @enderror" name="category_name" value="{{ old('category_name') ? old('category_name') : $category->category_name }}" autofocus>
@@ -64,6 +81,36 @@
                                     {!! __('backend.category.category-icon-help') !!}
                                 </small>
                                 @error('category_icon')
+                                <span class="invalid-tooltip">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="row form-group Link">
+                            <div class="col-md-12">
+                                <label class="text-black" for="Link">Link</label>
+                                <input id="Link" type="text" class="form-control @error('Link') is-invalid @enderror " name="Link" value="{{ old('Link') }}">
+                                <small class="text-muted">
+        
+                                </small>
+                                @error('Link')
+                                <span class="invalid-tooltip">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+                        </div>
+
+
+                             <div class="row form-group photo" >
+                            <div class="col-md-12">
+                                <label class="text-black" for="photo">photo</label>
+                                <input id="photo" type="file" class="form-control @error('photo') is-invalid @enderror" name="photo" value="{{ old('photo') }}">
+                                <small class="text-muted">
+        
+                                </small>
+                                @error('photo')
                                 <span class="invalid-tooltip">
                                         <strong>{{ $message }}</strong>
                                     </span>
