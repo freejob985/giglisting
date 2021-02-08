@@ -167,7 +167,7 @@
             </div>
         </div>
     </div>
-    <span class="icon"><span><img class="img-responsive" src="{{Request::root()}}/laravel_project/public/files/{{ $category->photo }}" alt="Chania"></span></span>
+    <span class="icon photo"><span><img class="img-responsive" src="{{Request::root()}}/laravel_project/public/files/{{ $category->photo }}" alt="Chania"></span></span>
 
     <!-- Modal -->
     <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModal" aria-hidden="true">
@@ -202,7 +202,21 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <script>
   $(document).ready(function(){
-   
+    var day=  $(".Type").value;
+          if(day==="photo"){
+               $(".photo").show();
+                 $(".Link").hide();
+                   $(".category_icon").hide();
+          }else if(day==="Link"){
+             $(".photo").hide();
+             $(".Link").show();
+             $(".category_icon").hide();  
+          }else{
+               $(".photo").hide();
+             $(".Link").hide();
+             $(".category_icon").show();      
+              
+          }
           $(".Type").change(function(){
           var day=  this.value;
           if(day==="photo"){
