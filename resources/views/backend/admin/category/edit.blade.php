@@ -197,4 +197,32 @@
 @endsection
 
 @section('scripts')
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script>
+  $(document).ready(function(){
+          $(".photo").hide();
+            $(".Link").hide();
+          $(".Type").change(function(){
+          var day=  this.value;
+          if(day==="photo"){
+               $(".photo").show();
+                 $(".Link").hide();
+                   $(".category_icon").hide();
+          }else if(day==="Link"){
+             $(".photo").hide();
+             $(".Link").show();
+             $(".category_icon").hide();  
+          }else{
+               $(".photo").hide();
+             $(".Link").hide();
+             $(".category_icon").show();      
+              
+          }
+          
+       //  alert(day);
+ 
+
+          });
+        });
+</script>
 @endsection
