@@ -86,26 +86,23 @@ class CategoryController extends Controller
         $validate_error = array();
 
         $category_parent_id = empty($request->category_parent_id) ? null : $request->category_parent_id;
-        if(!empty($category_parent_id))
-        {
+        if (!empty($category_parent_id)) {
             $category_exist = Category::where('id', $category_parent_id)->get()->count();
 
-            if($category_exist == 0)
-            {
+            if ($category_exist == 0) {
                 $validate_error['category_parent_id'] = __('categories.create-cat-not-found');
             }
         }
 
-        if(count($validate_error) > 0)
-        {
+        if (count($validate_error) > 0) {
             throw ValidationException::withMessages($validate_error);
         }
 
-       if($request->Type=="Link"){
-           $Type=$request->Link;
-           
-       }else if($request->Type=="photo"){
-          
+        if ($request->Type == "Link") {
+            $Type = $request->Link;
+
+        } else if ($request->Type == "photo") {
+
             if ($request->hasFile('photo')) {
                 $file = $request->photo;
                 $extension = $file->getClientOriginalExtension();
@@ -115,14 +112,13 @@ class CategoryController extends Controller
 
             } else {
 
-              //  $filename = "";
-                $Type="";
+                //  $filename = "";
+                $Type = "";
 
-            } 
-       }else{
-             $Type=$request->category_icon;
-       }
-
+            }
+        } else {
+            $Type = $request->category_icon;
+        }
 
         $category = new Category();
         $category->category_name = $request->category_name;
@@ -130,13 +126,10 @@ class CategoryController extends Controller
         $category->category_icon = $request->category_icon;
         $category->category_parent_id = $category_parent_id;
         $category->category_description = $request->category_description;
-        
-         $category->Type = $request->Type;
-          $category->Link = $request->Link;
-           $category->photo = $Type;
-
+        $category->Type = $request->Type;
+        $category->Link = $request->Link;
+        $category->photo = $Type;
         $category->save();
-
         \Session::flash('flash_message', __('alert.category-created'));
         \Session::flash('flash_type', 'success');
 
@@ -208,37 +201,29 @@ class CategoryController extends Controller
         $validate_error = array();
         $category_name_exist = Category::where('category_name', $category_name)
             ->where('id', '!=', $category->id)->get()->count();
-        if($category_name_exist > 0)
-        {
+        if ($category_name_exist > 0) {
             $validate_error['category_name'] = __('categories.category-name-taken-error');
         }
         $category_slug_exist = Category::where('category_slug', $category_slug)
             ->where('id', '!=', $category->id)->get()->count();
-        if($category_slug_exist > 0)
-        {
+        if ($category_slug_exist > 0) {
             $validate_error['category_slug'] = __('categories.category-slug-taken-error');
         }
 
-        if(!empty($category_parent_id))
-        {
-            if($category_parent_id == $category->id)
-            {
+        if (!empty($category_parent_id)) {
+            if ($category_parent_id == $category->id) {
                 $validate_error['category_parent_id'] = __('categories.self-parent-cat-error');
             }
 
             $category_exist = Category::where('id', $category_parent_id)->get()->count();
-            if($category_exist == 0)
-            {
+            if ($category_exist == 0) {
                 $validate_error['category_parent_id'] = __('categories.create-cat-not-found');
             }
         }
 
-        if(count($validate_error) > 0)
-        {
+        if (count($validate_error) > 0) {
             throw ValidationException::withMessages($validate_error);
-        }
-        else
-        {
+        } else {
             $category->category_name = $category_name;
             $category->category_slug = $category_slug;
             $category->category_icon = $category_icon;
@@ -263,29 +248,22 @@ class CategoryController extends Controller
     public function destroy(Category $category)
     {
         // check model relations before delete
-        if($category->allCustomFields()->get()->count() > 0)
-        {
+        if ($category->allCustomFields()->get()->count() > 0) {
             \Session::flash('flash_message', __('alert.category-delete-error-custom-field'));
             \Session::flash('flash_type', 'danger');
 
             return redirect()->route('admin.categories.edit', $category);
-        }
-        elseif($category->allItems()->get()->count() > 0)
-        {
+        } elseif ($category->allItems()->get()->count() > 0) {
             \Session::flash('flash_message', __('alert.category-delete-error-listing'));
             \Session::flash('flash_type', 'danger');
 
             return redirect()->route('admin.categories.edit', $category);
-        }
-        elseif($category->children()->get()->count() > 0)
-        {
+        } elseif ($category->children()->get()->count() > 0) {
             \Session::flash('flash_message', __('categories.category-delete-error-children'));
             \Session::flash('flash_type', 'danger');
 
             return redirect()->route('admin.categories.edit', $category);
-        }
-        else
-        {
+        } else {
             $category->delete();
 
             \Session::flash('flash_message', __('alert.category-deleted'));

@@ -24,17 +24,16 @@ class Category extends Model
         'category_description',
         'category_description',
         'category_description',
-         'Link',
-          'photo',
-           'Type',
-        
+        'Link',
+        'photo',
+        'Type',
+
     ];
 
-
 //    public function items()
-//    {
-//        return $this->hasMany('App\Item');
-//    }
+    //    {
+    //        return $this->hasMany('App\Item');
+    //    }
 
     /**
      * @return BelongsToMany
@@ -44,11 +43,10 @@ class Category extends Model
         return $this->belongsToMany('App\Item', 'category_item')->withTimestamps();
     }
 
-
 //    public function customFields()
-//    {
-//        return $this->hasMany('App\CustomField');
-//    }
+    //    {
+    //        return $this->hasMany('App\CustomField');
+    //    }
 
     /**
      * @return BelongsToMany
@@ -64,7 +62,7 @@ class Category extends Model
      */
     public function children()
     {
-        return $this->hasMany( 'App\Category', 'category_parent_id', 'id' );
+        return $this->hasMany('App\Category', 'category_parent_id', 'id');
     }
 
     /**
@@ -73,7 +71,7 @@ class Category extends Model
      */
     public function parent()
     {
-        return $this->hasOne( 'App\Category', 'id', 'category_parent_id' );
+        return $this->hasOne('App\Category', 'id', 'category_parent_id');
     }
 
     public function allParents()
@@ -82,13 +80,11 @@ class Category extends Model
         $parent_category = $this;
         $parent_exist = true;
 
-        while($parent_exist)
-        {
+        while ($parent_exist) {
             $parent_category = $parent_category->parent()->get()->first();
             $parent_exist = empty($parent_category) ? false : true;
 
-            if($parent_exist)
-            {
+            if ($parent_exist) {
                 $all_parents->prepend($parent_category);
             }
         }
@@ -106,10 +102,8 @@ class Category extends Model
 
         $sub_categories = $category->children()->orderBy('category_name')->get();
 
-        if($sub_categories->count() > 0)
-        {
-            foreach($sub_categories as $key => $sub_category)
-            {
+        if ($sub_categories->count() > 0) {
+            foreach ($sub_categories as $key => $sub_category) {
                 self::allChildren($sub_category, $children_categories);
             }
         }
@@ -121,8 +115,7 @@ class Category extends Model
         $this->allChildren($this, $children_categories);
 
         $children_categories_ids = array();
-        foreach($children_categories as $key => $children_category)
-        {
+        foreach ($children_categories as $key => $children_category) {
             $children_categories_ids[] = $children_category->id;
         }
 
@@ -146,35 +139,30 @@ class Category extends Model
             ->orderBy('category_name')
             ->get();
 
-        foreach($root_categories as $key_1 => $root_category)
-        {
+        foreach ($root_categories as $key_1 => $root_category) {
             $printable_array = array_merge($printable_array, self::getChildrenCategories($root_category));
         }
 
         return $printable_array;
     }
 
-    private function getChildrenCategories($category, $level_deep=0)
+    private function getChildrenCategories($category, $level_deep = 0)
     {
         $dash_str = "";
-        for($i=0; $i<$level_deep; $i++)
-        {
+        for ($i = 0; $i < $level_deep; $i++) {
             $dash_str .= "-";
         }
-        if(!empty($dash_str))
-        {
+        if (!empty($dash_str)) {
             $dash_str .= " ";
         }
         $children_categories_array = array(['category_id' => $category->id, 'category_name' => $dash_str . $category->category_name]);
 
         $children_categories = $category->children()->orderBy('category_name')->get();
 
-        if($children_categories->count() > 0)
-        {
+        if ($children_categories->count() > 0) {
             $level_deep += 1;
 
-            foreach($children_categories as $key => $children_category)
-            {
+            foreach ($children_categories as $key => $children_category) {
                 $children_categories_array = array_merge($children_categories_array, self::getChildrenCategories($children_category, $level_deep));
             }
         }
@@ -190,8 +178,7 @@ class Category extends Model
             ->orderBy('category_name')
             ->get();
 
-        foreach($root_categories as $key_1 => $root_category)
-        {
+        foreach ($root_categories as $key_1 => $root_category) {
             $printable_array = array_merge($printable_array, self::getChildrenCategoriesNoDash($root_category));
         }
 
@@ -204,10 +191,8 @@ class Category extends Model
 
         $children_categories = $category->children()->orderBy('category_name')->get();
 
-        if($children_categories->count() > 0)
-        {
-            foreach($children_categories as $key => $children_category)
-            {
+        if ($children_categories->count() > 0) {
+            foreach ($children_categories as $key => $children_category) {
                 $children_categories_array = array_merge($children_categories_array, self::getChildrenCategoriesNoDash($children_category));
             }
         }
