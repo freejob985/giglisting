@@ -204,8 +204,9 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <script>
   $(document).ready(function(){
-    var day=  $(".Type").text();
-    alert(day);
+   
+    var day== $(".Type").children("option:selected").val();
+
           if(day==="photo"){
                $(".photo").show();
                  $(".Link").hide();
