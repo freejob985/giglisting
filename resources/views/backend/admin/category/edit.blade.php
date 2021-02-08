@@ -167,7 +167,9 @@
             </div>
         </div>
     </div>
-    <span class="icon photo"><span><img class="img-responsive" src="{{Request::root()}}/laravel_project/public/files/{{ $category->photo }}" alt="Chania"></span></span>
+    <span class="icon photo"><span><img  style="
+        width: 10%;
+    " class="img-responsive" src="{{Request::root()}}/laravel_project/public/files/{{ $category->photo }}" alt="Chania"></span></span>
 
     <!-- Modal -->
     <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModal" aria-hidden="true">
