@@ -116,6 +116,7 @@ if(Session::get('user_prefer_language')==""){
                     ->where('items.item_featured', Item::ITEM_FEATURED)
                     ->where('items.country_id', $site_prefer_country_id)
                     ->where('u.email_verified_at', '!=', null)
+                    ->where('lang',Session::get('user_prefer_language'))
                     ->where('u.user_suspended', User::USER_NOT_SUSPENDED);
             })
             ->where('lang',Session::get('user_prefer_language'))      ->where('lang',Session::get('user_prefer_language'))
