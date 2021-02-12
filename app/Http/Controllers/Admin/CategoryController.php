@@ -129,6 +129,7 @@ class CategoryController extends Controller
         $category->Type = $request->Type;
         $category->Link = $request->Link;
         $category->photo = $Type;
+        $category->lang =  Session::get('user_prefer_language');
         $category->save();
         \Session::flash('flash_message', __('alert.category-created'));
         \Session::flash('flash_type', 'success');
@@ -256,6 +257,7 @@ class CategoryController extends Controller
             $category->Type = $request->Type;
             $category->Link = $request->Link;
             $category->photo = $Type;
+            $category->lang =  Session::get('user_prefer_language');
             $category->save();
 
             \Session::flash('flash_message', __('alert.category-updated'));

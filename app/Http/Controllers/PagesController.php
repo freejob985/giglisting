@@ -45,9 +45,6 @@ class PagesController extends Controller
     {
 
 
-  dd(Session::get('user_prefer_language'));
-
-
 
 if(Session::get('user_prefer_language')==""){
     Session::put('user_prefer_language', "en");
