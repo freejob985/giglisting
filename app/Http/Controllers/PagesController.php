@@ -43,18 +43,6 @@ class PagesController extends Controller
 {
     public function index(Request $request)
     {
-
-
-
-if(Session::get('user_prefer_language')==""){
-    Session::put('user_prefer_language', "en");
-  //  dd("Catch errors for script and full tracking ( 1 )");
-}
-
-
-
-
-
         $settings = app('site_global_settings');
         $site_prefer_country_id = app('site_prefer_country_id');
 
@@ -89,13 +77,11 @@ if(Session::get('user_prefer_language')==""){
          * first 5 categories order by total listings
          */
         $categories = Category::where('category_parent_id', null)
-        ->where('lang',Session::get('user_prefer_language'))
             ->orderBy('category_name')->take(5)->get();
 
         $total_items_count = Item::join('users as u', 'items.user_id', '=', 'u.id')
             ->where('items.item_status', Item::ITEM_PUBLISHED)
             ->where('items.country_id', $site_prefer_country_id)
-            ->where('lang',Session::get('user_prefer_language'))
             ->where('u.email_verified_at', '!=', null)
             ->where('u.user_suspended', User::USER_NOT_SUSPENDED)
             ->count();
@@ -116,10 +102,8 @@ if(Session::get('user_prefer_language')==""){
                     ->where('items.item_featured', Item::ITEM_FEATURED)
                     ->where('items.country_id', $site_prefer_country_id)
                     ->where('u.email_verified_at', '!=', null)
-                    ->where('lang',Session::get('user_prefer_language'))
                     ->where('u.user_suspended', User::USER_NOT_SUSPENDED);
             })
-            ->where('lang',Session::get('user_prefer_language'))      ->where('lang',Session::get('user_prefer_language'))
             ->where(function($query) use ($today) {
                 $query->where(function($sub_query) use ($today) {
                     $sub_query->where('s.subscription_end_date', '!=', null)
@@ -135,7 +119,7 @@ if(Session::get('user_prefer_language')==""){
             ->with('state')
             ->with('city')
             ->with('user');
-        $paid_items = $paid_items_query->take(5)->where('lang',Session::get('user_prefer_language'))->get();
+        $paid_items = $paid_items_query->take(5)->get();
 
         /**
          * get nearest 9 popular items by device lat and lng
@@ -160,7 +144,6 @@ if(Session::get('user_prefer_language')==""){
             ->with('state')
             ->with('city')
             ->with('user')
-            ->where('lang',Session::get('user_prefer_language'))
             ->take(9)->get();
 
         // if no items nearby, then use the default lat & lng
@@ -178,7 +161,6 @@ if(Session::get('user_prefer_language')==""){
                 ->with('state')
                 ->with('city')
                 ->with('user')
-                ->where('lang',Session::get('user_prefer_language'))
                 ->take(9)->get();
         }
         $popular_items = $popular_items->shuffle();
@@ -192,7 +174,6 @@ if(Session::get('user_prefer_language')==""){
             ->with('state')
             ->with('city')
             ->with('user')
-            ->where('lang',Session::get('user_prefer_language'))
             ->take(6)
             ->get();
 
@@ -713,8 +694,7 @@ if(Session::get('user_prefer_language')==""){
          * End SEO
          */
 
-        $categories = Category::where('category_parent_id', null)
-        ->where('lang',Session::get('user_prefer_language'))->orderBy('category_name')->get();
+        $categories = Category::where('category_parent_id', null)->orderBy('category_name')->get();
 
         /**
          * Do listing query
@@ -3475,7 +3455,6 @@ if(Session::get('user_prefer_language')==""){
         {
             // save to language preference to session.
             Session::put('user_prefer_language', $user_prefer_language);
-
         }
 
         return redirect()->back();
