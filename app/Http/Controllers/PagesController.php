@@ -45,7 +45,7 @@ class PagesController extends Controller
     {
 
 
-      //  dd(Session::get('user_prefer_language'));
+  dd(Session::get('user_prefer_language'));
 
 
 
@@ -53,6 +53,9 @@ if(Session::get('user_prefer_language')==""){
     Session::put('user_prefer_language', "en");
   //  dd("Catch errors for script and full tracking ( 1 )");
 }
+
+
+
 
 
         $settings = app('site_global_settings');
