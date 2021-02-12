@@ -100,6 +100,7 @@ class Item extends Model implements ReviewRateable
         'item_categories_string',
         'item_image_blur',
         'item_youtube_id',
+        'lang',
     ];
 
     /**

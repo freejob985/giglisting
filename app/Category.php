@@ -27,6 +27,7 @@ class Category extends Model
         'Link',
         'photo',
         'Type',
+        'lang',
 
     ];
 
