@@ -118,6 +118,7 @@ if(Session::get('user_prefer_language')==""){
                     ->where('u.email_verified_at', '!=', null)
                     ->where('u.user_suspended', User::USER_NOT_SUSPENDED);
             })
+            ->where('lang',Session::get('user_prefer_language'))      ->where('lang',Session::get('user_prefer_language'))
             ->where(function($query) use ($today) {
                 $query->where(function($sub_query) use ($today) {
                     $sub_query->where('s.subscription_end_date', '!=', null)
@@ -711,7 +712,8 @@ if(Session::get('user_prefer_language')==""){
          * End SEO
          */
 
-        $categories = Category::where('category_parent_id', null)->orderBy('category_name')->get();
+        $categories = Category::where('category_parent_id', null)
+        ->where('lang',Session::get('user_prefer_language'))->orderBy('category_name')->get();
 
         /**
          * Do listing query

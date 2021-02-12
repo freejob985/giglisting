@@ -88,7 +88,8 @@ class CategoryController extends Controller
 
         $category_parent_id = empty($request->category_parent_id) ? null : $request->category_parent_id;
         if (!empty($category_parent_id)) {
-            $category_exist = Category::where('id', $category_parent_id)->get()->count();
+            $category_exist = Category::where('id', $category_parent_id)
+            ->where('lang',Session::get('user_prefer_language'))->get()->count();
 
             if ($category_exist == 0) {
                 $validate_error['category_parent_id'] = __('categories.create-cat-not-found');

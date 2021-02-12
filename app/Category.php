@@ -138,6 +138,7 @@ class Category extends Model
 
         $root_categories = Category::where('category_parent_id', null)
             ->orderBy('category_name')
+            ->where('lang',Session::get('user_prefer_language'))
             ->get();
 
         foreach ($root_categories as $key_1 => $root_category) {
@@ -176,6 +177,7 @@ class Category extends Model
         $printable_array = array();
 
         $root_categories = Category::where('category_parent_id', null)
+        ->where('lang',Session::get('user_prefer_language'))
             ->orderBy('category_name')
             ->get();
 
