@@ -959,6 +959,7 @@ class ItemController extends Controller
 
         $item->item_features_string = null;
         $item->item_categories_string = $item_categories_string;
+        $item->lang =Session::get('user_prefer_language');
         $item->save();
 
         // start to save custom fields data
