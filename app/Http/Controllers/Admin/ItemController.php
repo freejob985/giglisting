@@ -471,6 +471,9 @@ class ItemController extends Controller
             'item_social_twitter' => $item_social_twitter,
             'item_social_linkedin' => $item_social_linkedin,
             'item_categories_string' => $item_categories_string,
+            'lang' => Session::get('user_prefer_language'),
+          
+
         ));
         $new_item->save();
 
