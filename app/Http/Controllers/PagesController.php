@@ -89,11 +89,13 @@ if(Session::get('user_prefer_language')==""){
          * first 5 categories order by total listings
          */
         $categories = Category::where('category_parent_id', null)
+        ->where('lang',Session::get('user_prefer_language'))
             ->orderBy('category_name')->take(5)->get();
 
         $total_items_count = Item::join('users as u', 'items.user_id', '=', 'u.id')
             ->where('items.item_status', Item::ITEM_PUBLISHED)
             ->where('items.country_id', $site_prefer_country_id)
+            ->where('lang',Session::get('user_prefer_language'))
             ->where('u.email_verified_at', '!=', null)
             ->where('u.user_suspended', User::USER_NOT_SUSPENDED)
             ->count();
@@ -131,7 +133,7 @@ if(Session::get('user_prefer_language')==""){
             ->with('state')
             ->with('city')
             ->with('user');
-        $paid_items = $paid_items_query->take(5)->get();
+        $paid_items = $paid_items_query->take(5)->where('lang',Session::get('user_prefer_language'))->get();
 
         /**
          * get nearest 9 popular items by device lat and lng
@@ -156,6 +158,7 @@ if(Session::get('user_prefer_language')==""){
             ->with('state')
             ->with('city')
             ->with('user')
+            ->where('lang',Session::get('user_prefer_language'))
             ->take(9)->get();
 
         // if no items nearby, then use the default lat & lng
@@ -173,6 +176,7 @@ if(Session::get('user_prefer_language')==""){
                 ->with('state')
                 ->with('city')
                 ->with('user')
+                ->where('lang',Session::get('user_prefer_language'))
                 ->take(9)->get();
         }
         $popular_items = $popular_items->shuffle();
@@ -186,6 +190,7 @@ if(Session::get('user_prefer_language')==""){
             ->with('state')
             ->with('city')
             ->with('user')
+            ->where('lang',Session::get('user_prefer_language'))
             ->take(6)
             ->get();
 
