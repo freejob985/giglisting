@@ -46,6 +46,15 @@ class PagesController extends Controller
 
 
         dd(Session::get('user_prefer_language'));
+
+
+
+if(Session::get('user_prefer_language')==""){
+    Session::put('user_prefer_language', "en");
+    dd("Catch errors for script and full tracking ( 1 )");
+}
+
+
         $settings = app('site_global_settings');
         $site_prefer_country_id = app('site_prefer_country_id');
 
@@ -3458,6 +3467,7 @@ class PagesController extends Controller
         {
             // save to language preference to session.
             Session::put('user_prefer_language', $user_prefer_language);
+
         }
 
         return redirect()->back();
