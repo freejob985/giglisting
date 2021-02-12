@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Validation\ValidationException;
+use Session;
 
 class CategoryController extends Controller
 {
