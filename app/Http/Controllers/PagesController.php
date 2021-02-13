@@ -1728,6 +1728,7 @@ class PagesController extends Controller
             $paid_items_query->join('users as u', 'items.user_id', '=', 'u.id')
                 ->join('subscriptions as s', 'u.id', '=', 's.user_id')
                 ->select('items.*')
+                ->where('lang',Session::get('lang'))
                 ->where(function($query) use ($state, $settings, $site_prefer_country_id) {
                     $query->where("items.state_id", $state->id)
                         ->where("items.item_status", Item::ITEM_PUBLISHED)
@@ -1755,6 +1756,7 @@ class PagesController extends Controller
             $free_items_query->join('users as u', 'items.user_id', '=', 'u.id')
                 ->join('subscriptions as s', 'u.id', '=', 's.user_id')
                 ->select('items.*')
+                ->where('lang',Session::get('lang'))
                 ->where(function($query) use ($state, $settings, $site_prefer_country_id) {
                     $query->where("items.state_id", $state->id)
                         ->where("items.item_status", Item::ITEM_PUBLISHED)
