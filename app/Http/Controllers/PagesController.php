@@ -752,6 +752,7 @@ class PagesController extends Controller
         $paid_items_query->where("items.item_status", Item::ITEM_PUBLISHED)
             ->where('items.country_id', $site_prefer_country_id)
             ->where('items.item_featured', Item::ITEM_FEATURED)
+            ->where('lang',Session::get('lang'))
             ->where(function($query) use ($paid_user_ids) {
 
                 $query->whereIn('items.user_id', $paid_user_ids)
