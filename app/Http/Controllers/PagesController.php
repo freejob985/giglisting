@@ -77,7 +77,7 @@ class PagesController extends Controller
          * first 5 categories order by total listings
          */
         $categories = Category::where('category_parent_id', null)
-            ->orderBy('category_name')->take(5)->get();
+            ->orderBy('category_name')->take(1)->get();
 
         $total_items_count = Item::join('users as u', 'items.user_id', '=', 'u.id')
             ->where('items.item_status', Item::ITEM_PUBLISHED)
