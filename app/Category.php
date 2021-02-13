@@ -179,7 +179,7 @@ class Category extends Model
         $printable_array = array();
 
         $root_categories = Category::where('category_parent_id', null)
-        ->where('lang',Session::get('user_prefer_language'))
+        ->where('lang',Session::get('lang'))
             ->orderBy('category_name')
             ->get();
 
