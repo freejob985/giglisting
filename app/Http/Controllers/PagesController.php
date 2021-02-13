@@ -76,12 +76,12 @@ class PagesController extends Controller
         /**
          * first 5 categories order by total listings
          */
-        if(Session::get('user_prefer_language')==""){
-            Session::put('user_prefer_language', "en");
+        if(Session::get('lang')==""){
+            Session::put('lang', "en");
           //  dd("Catch errors for script and full tracking ( 1 )");
         }
         $categories = Category::where('category_parent_id', null)
-            ->where('lang',Session::get('user_prefer_language'))
+            ->where('lang',Session::get('lang'))
             ->orderBy('category_name')->take(5)->get();
 
         $total_items_count = Item::join('users as u', 'items.user_id', '=', 'u.id')
@@ -3466,7 +3466,7 @@ class PagesController extends Controller
             Session::put('lang', $user_prefer_language);
 
         }
-        dd(Session::get('lang'));
+      //  dd(Session::get('lang'));
         return redirect()->back();
     }
 
