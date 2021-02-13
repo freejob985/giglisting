@@ -3455,13 +3455,18 @@ class PagesController extends Controller
             $login_user = Auth::user();
             $login_user->user_prefer_language = $user_prefer_language;
             $login_user->save();
+            Session::put('lang', $user_prefer_language);
+
         }
         else
         {
+
             // save to language preference to session.
             Session::put('user_prefer_language', $user_prefer_language);
+            Session::put('lang', $user_prefer_language);
+
         }
-        dd(Session::get('user_prefer_language'));
+        dd(Session::get('lang'));
         return redirect()->back();
     }
 
