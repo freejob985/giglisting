@@ -706,7 +706,9 @@ class PagesController extends Controller
          * End SEO
          */
 
-        $categories = Category::where('category_parent_id', null)->orderBy('category_name')->get();
+        $categories = Category::where('category_parent_id', null)
+        ->where('lang',Session::get('lang'))
+        ->orderBy('category_name')->get();
 
         /**
          * Do listing query
