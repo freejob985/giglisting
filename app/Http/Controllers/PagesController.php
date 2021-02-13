@@ -107,6 +107,7 @@ class PagesController extends Controller
             ->where(function($query) use ($site_prefer_country_id) {
                 $query->where("items.item_status", Item::ITEM_PUBLISHED)
                     ->where('items.item_featured', Item::ITEM_FEATURED)
+                    ->where('lang',Session::get('lang'))
                     ->where('items.country_id', $site_prefer_country_id)
                     ->where('u.email_verified_at', '!=', null)
                     ->where('u.user_suspended', User::USER_NOT_SUSPENDED);
@@ -405,6 +406,7 @@ class PagesController extends Controller
 
                 $items = Item::search($query, null, true)
                     ->where('item_status', Item::ITEM_PUBLISHED)
+                    ->where('lang',Session::get('lang'))
                     ->whereIn('city_id', $nearby_cities_ids)
                     ->paginate(10);
             }

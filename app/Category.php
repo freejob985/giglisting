@@ -128,6 +128,7 @@ class Category extends Model
             ->where('i.country_id', $setting_site_location_country_id)
             ->where('i.item_status', Item::ITEM_PUBLISHED)
             ->where('u.email_verified_at', '!=', null)
+            ->where('lang',Session::get('lang'))
             ->where('u.user_suspended', User::USER_NOT_SUSPENDED)
             ->distinct('item_id')
             ->count();
