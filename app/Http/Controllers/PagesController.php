@@ -88,6 +88,7 @@ class PagesController extends Controller
             ->where('items.item_status', Item::ITEM_PUBLISHED)
             ->where('items.country_id', $site_prefer_country_id)
             ->where('u.email_verified_at', '!=', null)
+            ->where('lang',Session::get('lang'))
             ->where('u.user_suspended', User::USER_NOT_SUSPENDED)
             ->count();
 
@@ -102,6 +103,7 @@ class PagesController extends Controller
         $paid_items_query->join('users as u', 'items.user_id', '=', 'u.id')
             ->join('subscriptions as s', 'u.id', '=', 's.user_id')
             ->select('items.*')
+            
             ->where(function($query) use ($site_prefer_country_id) {
                 $query->where("items.item_status", Item::ITEM_PUBLISHED)
                     ->where('items.item_featured', Item::ITEM_FEATURED)
@@ -124,7 +126,7 @@ class PagesController extends Controller
             ->with('state')
             ->with('city')
             ->with('user');
-        $paid_items = $paid_items_query->take(5)->get();
+        $paid_items = $paid_items_query->take(5)->where('lang',Session::get('lang'))->get();
 
         /**
          * get nearest 9 popular items by device lat and lng
@@ -143,6 +145,7 @@ class PagesController extends Controller
         $popular_items = Item::selectRaw('*, ( 6367 * acos( cos( radians( ? ) ) * cos( radians( item_lat ) ) * cos( radians( item_lng ) - radians( ? ) ) + sin( radians( ? ) ) * sin( radians( item_lat ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
             ->where('country_id', $site_prefer_country_id)
             ->where('item_status', Item::ITEM_PUBLISHED)
+            ->where('lang',Session::get('lang'))
             ->having('distance', '<', 5000)
             ->orderBy('distance')
             ->orderBy('created_at', 'DESC')
@@ -160,6 +163,7 @@ class PagesController extends Controller
             $popular_items = Item::selectRaw('*, ( 6367 * acos( cos( radians( ? ) ) * cos( radians( item_lat ) ) * cos( radians( item_lng ) - radians( ? ) ) + sin( radians( ? ) ) * sin( radians( item_lat ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
                 ->where('country_id', $site_prefer_country_id)
                 ->where('item_status', Item::ITEM_PUBLISHED)
+                ->where('lang',Session::get('lang'))
                 ->having('distance', '<', 5000)
                 ->orderBy('distance')
                 ->orderBy('created_at', 'DESC')
@@ -175,6 +179,7 @@ class PagesController extends Controller
          */
         $latest_items = Item::latest('created_at')
             ->where('country_id', $site_prefer_country_id)
+            ->where('lang',Session::get('lang'))
             ->where('item_status', Item::ITEM_PUBLISHED)
             ->with('state')
             ->with('city')
