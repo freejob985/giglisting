@@ -3461,7 +3461,7 @@ class PagesController extends Controller
             // save to language preference to session.
             Session::put('user_prefer_language', $user_prefer_language);
         }
-
+        dd(Session::get('user_prefer_language'));
         return redirect()->back();
     }
 
