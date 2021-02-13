@@ -36,7 +36,8 @@ class CategoryController extends Controller
          * End SEO
          */
 
-        $all_categories = Category::all();
+       // $all_categories = Category::all();
+        $all_categories  = Category::where('lang',Session::get('lang'))->orderBy('category_name')->get();
 
         return response()->view('backend.admin.category.index', compact('all_categories'));
     }

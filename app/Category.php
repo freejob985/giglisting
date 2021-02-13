@@ -140,7 +140,7 @@ class Category extends Model
 
         $root_categories = Category::where('category_parent_id', null)
             ->orderBy('category_name')
-            ->where('lang',Session::get('user_prefer_language'))
+            ->where('lang',Session::get('lang'))
             ->get();
 
         foreach ($root_categories as $key_1 => $root_category) {
