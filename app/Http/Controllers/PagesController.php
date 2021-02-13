@@ -76,8 +76,13 @@ class PagesController extends Controller
         /**
          * first 5 categories order by total listings
          */
+        if(Session::get('user_prefer_language')==""){
+            Session::put('user_prefer_language', "en");
+          //  dd("Catch errors for script and full tracking ( 1 )");
+        }
         $categories = Category::where('category_parent_id', null)
-            ->orderBy('category_name')->take(1)->get();
+            ->where('lang',Session::get('user_prefer_language'))
+            ->orderBy('category_name')->take(5)->get();
 
         $total_items_count = Item::join('users as u', 'items.user_id', '=', 'u.id')
             ->where('items.item_status', Item::ITEM_PUBLISHED)
