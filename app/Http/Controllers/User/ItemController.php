@@ -494,6 +494,7 @@ class ItemController extends Controller
             'item_social_twitter' => $item_social_twitter,
             'item_social_linkedin' => $item_social_linkedin,
             'item_categories_string' => $item_categories_string,
+            'lang' => Session::get('lang'),
         ));
         $new_item->save();
 
@@ -1003,6 +1004,7 @@ class ItemController extends Controller
 
         $item->item_features_string = null;
         $item->item_categories_string = $item_categories_string;
+        $item->lang =Session::get('lang');
         $item->save();
 
         // start to save custom fields data
