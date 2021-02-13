@@ -19,7 +19,7 @@ class CustomField extends Model
      */
     protected $fillable = [
         'category_id', 'custom_field_name', 'custom_field_type', 'custom_field_seed_value',
-        'custom_field_icon_class', 'custom_field_order'
+        'custom_field_icon_class', 'custom_field_order','lang'
     ];
 
     /**

@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Http\Controllers\Admin;
-
 use App\Category;
 use App\CustomField;
 use App\Http\Controllers\Controller;
@@ -12,7 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Validation\ValidationException;
-
+use Session;
 class CustomFieldController extends Controller
 {
 
@@ -122,6 +121,7 @@ class CustomFieldController extends Controller
             'custom_field_type' => $custom_field_type,
             'custom_field_seed_value' => $custom_field_seed_value,
             'custom_field_order' => $custom_field_order,
+            'lang' => Session::get('lang'),
         ));
         $new_custom_field->save();
 
@@ -218,6 +218,7 @@ class CustomFieldController extends Controller
         $customField->custom_field_type = $request->custom_field_type;
         $customField->custom_field_seed_value = $request->custom_field_seed_value;
         $customField->custom_field_order = $request->custom_field_order;
+        $customField->lang = $request->lang;
         $customField->save();
 
         $categories = $request->category;
