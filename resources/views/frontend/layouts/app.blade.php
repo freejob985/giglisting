@@ -57,6 +57,9 @@
             {
                 background: #009688;
             }
+            img.full {
+                width: 65%;
+            }
         </style>
     @endif
 
