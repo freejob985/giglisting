@@ -15,5 +15,6 @@ class Testimonial extends Model
         'testimonial_name', 'testimonial_company',
         'testimonial_job_title', 'testimonial_image',
         'testimonial_description',
+        'lang',
     ];
 }
