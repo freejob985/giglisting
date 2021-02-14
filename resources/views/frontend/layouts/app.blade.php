@@ -60,6 +60,9 @@
             img.full {
                 width: 65% !important;
             }
+            button#table_option_dropdown_country {
+                display: none;
+            }
         </style>
     @endif
 
