@@ -100,6 +100,7 @@ class PagesController extends Controller
 
         $total_items_count = Item::join('users as u', 'items.user_id', '=', 'u.id')
             ->where('items.item_status', Item::ITEM_PUBLISHED)
+            ->where('items.country_id', $site_prefer_country_id)
             ->where('u.email_verified_at', '!=', null)
             ->where('lang', Session::get('lang'))
             ->where('u.user_suspended', User::USER_NOT_SUSPENDED)
@@ -120,11 +121,8 @@ class PagesController extends Controller
             ->where(function ($query) use ($site_prefer_country_id) {
                 $query->where("items.item_status", Item::ITEM_PUBLISHED)
                     ->where('items.item_featured', Item::ITEM_FEATURED)
-<<<<<<< HEAD
                     ->where('lang', Session::get('lang'))
                     ->where('items.country_id', $site_prefer_country_id)
-=======
->>>>>>> شسي
                     ->where('u.email_verified_at', '!=', null)
                     ->where('u.user_suspended', User::USER_NOT_SUSPENDED);
             })
@@ -157,6 +155,7 @@ class PagesController extends Controller
         }
 
         $popular_items = Item::selectRaw('*, ( 6367 * acos( cos( radians( ? ) ) * cos( radians( item_lat ) ) * cos( radians( item_lng ) - radians( ? ) ) + sin( radians( ? ) ) * sin( radians( item_lat ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
+            ->where('country_id', $site_prefer_country_id)
             ->where('item_status', Item::ITEM_PUBLISHED)
             ->where('lang', Session::get('lang'))
             ->having('distance', '<', 5000)
@@ -173,7 +172,7 @@ class PagesController extends Controller
             $longitude = $settings->setting_site_location_lng;
 
             $popular_items = Item::selectRaw('*, ( 6367 * acos( cos( radians( ? ) ) * cos( radians( item_lat ) ) * cos( radians( item_lng ) - radians( ? ) ) + sin( radians( ? ) ) * sin( radians( item_lat ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
-      
+                ->where('country_id', $site_prefer_country_id)
                 ->where('item_status', Item::ITEM_PUBLISHED)
                 ->where('lang', Session::get('lang'))
                 ->having('distance', '<', 5000)
@@ -190,18 +189,15 @@ class PagesController extends Controller
          * get first 6 latest items
          */
         $latest_items = Item::latest('created_at')
-<<<<<<< HEAD
             ->where('country_id', $site_prefer_country_id)
             ->where('lang', Session::get('lang'))
-=======
-   
->>>>>>> شسي
             ->where('item_status', Item::ITEM_PUBLISHED)
             ->with('state')
             ->with('city')
             ->with('user')
             ->take(6)
             ->get();
+            
 
         /**
          * testimonials
