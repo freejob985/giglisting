@@ -74,7 +74,7 @@
 
                 @if(count($categories))
                     @foreach($categories as $key => $category)
-                        <div class="col-sm-6 col-md-4 mb-4 mb-lg-0 col-lg-2">
+                        <div class="col-sm-6 col-md-4 mb-4 mb-lg-0 col-lg-4">
                             <a href="{{ route('page.category', $category->category_slug) }}"
                                 class="popular-category h-100">
                                 @if ($category->Type=="Link")
