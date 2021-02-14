@@ -14,26 +14,30 @@
 
         <div class="col-8 col-xl-2 pr-0">
 
-                @if(!empty($site_global_settings->setting_site_logo))
-                <h1 class="mb-0 site-logo">
-                    <a href="{{ route('page.home') }}" class="text-black mb-0 customization-header-font-color">
-                        @foreach(explode(' ', empty($site_global_settings->setting_site_name) ? config('app.name', 'Laravel') : $site_global_settings->setting_site_name) as $key => $word)
-                            @if($key/2 == 0)
-                                {{ $word }}
-                            @else
-                                <span class="text-primary">{{ $word }}</span>
-                            @endif
-                        @endforeach
+            @if(!empty($site_global_settings->setting_site_logo))
+            <h1 class="mb-0 site-logo">
+                <a href="{{ route('page.home') }}" class="text-black mb-0 customization-header-font-color">
+                    @foreach(explode(' ', empty($site_global_settings->setting_site_name) ? config('app.name',
+                    'Laravel') : $site_global_settings->setting_site_name) as $key => $word)
+                    @if($key/2 == 0)
+                    {{ $word }}
+                    @else
+                    <span class="text-primary">{{ $word }}</span>
+                    @endif
+                    @endforeach
 
-                    </a>
-                </h1>
-                @else
-                <h1 class="mb-0 mt-1 site-logo">
-                    <a href="{{ route('page.home') }}" class="text-black mb-0">
-                        <img class="full" alt="" data-src="http://gigworldgo.com/assets/uploads/media-uploader/logo1588283745.gif" src="http://gigworldgo.com/assets/uploads/media-uploader/logo1588283745.gif">
-                    </a>
-                </h1>
-                @endif
+                </a>
+            </h1>
+            @else
+            <h1 class="mb-0 mt-1 site-logo">
+                <a href="{{ route('page.home') }}" class="text-black mb-0">
+                    <img class="full" style="
+                        width: 58% !important;
+                    " alt="" data-src="http://gigworldgo.com/assets/uploads/media-uploader/logo1588283745.gif"
+                        src="http://gigworldgo.com/assets/uploads/media-uploader/logo1588283745.gif">
+                </a>
+            </h1>
+            @endif
 
 
         </div>
@@ -50,42 +54,48 @@
                     <li><a href="{{ route('page.contact') }}">{{ __('frontend.header.contact') }}</a></li>
 
                     @guest
-                        <li class="ml-xl-3 login"><a href="{{ route('login') }}"><span class="border-left pl-xl-4"></span>{{ __('frontend.header.login') }}</a></li>
-                        @if (Route::has('register'))
-                            <li><a href="{{ route('register') }}">{{ __('frontend.header.register') }}</a></li>
-                        @endif
+                    <li class="ml-xl-3 login"><a href="{{ route('login') }}"><span
+                                class="border-left pl-xl-4"></span>{{ __('frontend.header.login') }}</a></li>
+                    @if (Route::has('register'))
+                    <li><a href="{{ route('register') }}">{{ __('frontend.header.register') }}</a></li>
+                    @endif
                     @else
-                        <li class="has-children">
-                            <a href="#">{{ Auth::user()->name }}</a>
-                            <ul class="dropdown">
-                                <li>
-                                    @if(Auth::user()->isAdmin())
-                                        <a href="{{ route('admin.index') }}">{{ __('frontend.header.dashboard') }}</a>
-                                    @else
-                                        <a href="{{ route('user.index') }}">{{ __('frontend.header.dashboard') }}</a>
-                                    @endif
-                                </li>
-                                <li><a href="{{ route('logout') }}"
-                                       onclick="event.preventDefault();
+                    <li class="has-children">
+                        <a href="#">{{ Auth::user()->name }}</a>
+                        <ul class="dropdown">
+                            <li>
+                                @if(Auth::user()->isAdmin())
+                                <a href="{{ route('admin.index') }}">{{ __('frontend.header.dashboard') }}</a>
+                                @else
+                                <a href="{{ route('user.index') }}">{{ __('frontend.header.dashboard') }}</a>
+                                @endif
+                            </li>
+                            <li><a href="{{ route('logout') }}" onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">
-                                        {{ __('auth.logout') }}
-                                    </a>
-                                    <form id="logout-form" action="{{ route('logout') }}" method="POST">
-                                        @csrf
-                                    </form>
-                                </li>
-                            </ul>
-                        </li>
+                                    {{ __('auth.logout') }}
+                                </a>
+                                <form id="logout-form" action="{{ route('logout') }}" method="POST">
+                                    @csrf
+                                </form>
+                            </li>
+                        </ul>
+                    </li>
                     @endguest
                     <li>
                         @guest
-                            <a href="{{ route('user.items.create') }}" class="cta"><span class="bg-primary text-white rounded"><i class="fas fa-plus mr-1"></i> {{ __('frontend.header.list-business') }}</span></a>
+                        <a href="{{ route('user.items.create') }}" class="cta"><span
+                                class="bg-primary text-white rounded"><i class="fas fa-plus mr-1"></i>
+                                {{ __('frontend.header.list-business') }}</span></a>
                         @else
-                            @if(Auth::user()->isAdmin())
-                                <a href="{{ route('admin.items.create') }}" class="cta"><span class="bg-primary text-white rounded"><i class="fas fa-plus mr-1"></i> {{ __('frontend.header.list-business') }}</span></a>
-                            @else
-                                <a href="{{ route('user.items.create') }}" class="cta"><span class="bg-primary text-white rounded"><i class="fas fa-plus mr-1"></i> {{ __('frontend.header.list-business') }}</span></a>
-                            @endif
+                        @if(Auth::user()->isAdmin())
+                        <a href="{{ route('admin.items.create') }}" class="cta"><span
+                                class="bg-primary text-white rounded"><i class="fas fa-plus mr-1"></i>
+                                {{ __('frontend.header.list-business') }}</span></a>
+                        @else
+                        <a href="{{ route('user.items.create') }}" class="cta"><span
+                                class="bg-primary text-white rounded"><i class="fas fa-plus mr-1"></i>
+                                {{ __('frontend.header.list-business') }}</span></a>
+                        @endif
                         @endguest
                     </li>
                 </ul>
