@@ -79,15 +79,15 @@ class PagesController extends Controller
             $login_user->save();
             Session::put('user_prefer_language', Session::get('lang'));
 
-            Session::put('lang', "en");
+            Session::put('lang', Session::get('lang'));
 
         } else {
             if (Session::get('lang') == "") {
-                Session::put('lang', "en");
+                Session::put('lang', Session::get('lang'));
                 //  dd("Catch errors for script and full tracking ( 1 )");
             } else {
                 Session::put('user_prefer_language', $user_prefer_language);
-                Session::put('lang', "en");
+                Session::put('lang', Session::get('lang'));
             }
 
             // save to language preference to session.
