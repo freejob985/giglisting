@@ -14,7 +14,7 @@
 
         <div class="col-8 col-xl-2 pr-0">
 
-                @if(empty($site_global_settings->setting_site_logo))
+                @if(!empty($site_global_settings->setting_site_logo))
                 <h1 class="mb-0 site-logo">
                     <a href="{{ route('page.home') }}" class="text-black mb-0 customization-header-font-color">
                         @foreach(explode(' ', empty($site_global_settings->setting_site_name) ? config('app.name', 'Laravel') : $site_global_settings->setting_site_name) as $key => $word)
@@ -30,7 +30,7 @@
                 @else
                 <h1 class="mb-0 mt-1 site-logo">
                     <a href="{{ route('page.home') }}" class="text-black mb-0">
-                        <img src="http://giglisting.gigworldgo.com/frontend/images/placeholder/logo.gif">
+                        <img class="full" alt="" data-src="http://gigworldgo.com/assets/uploads/media-uploader/logo1588283745.gif" src="http://gigworldgo.com/assets/uploads/media-uploader/logo1588283745.gif">
                     </a>
                 </h1>
                 @endif
