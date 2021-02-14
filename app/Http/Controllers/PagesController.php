@@ -3456,6 +3456,8 @@ class PagesController extends Controller
      */
     public function updateLocale(Request $request, string $user_prefer_language)
     {
+dd($user_prefer_language);
+
 //        $request->validate([
 //            'user_prefer_language' => 'nullable|max:5',
 //        ]);
@@ -3467,6 +3469,8 @@ class PagesController extends Controller
             $login_user = Auth::user();
             $login_user->user_prefer_language = $user_prefer_language;
             $login_user->save();
+            Session::put('user_prefer_language', $user_prefer_language);
+
             Session::put('lang', $user_prefer_language);
 
         }
