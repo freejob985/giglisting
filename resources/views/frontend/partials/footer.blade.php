@@ -47,7 +47,9 @@
         <div class="row pt-2 mt-5 pb-2">
             <div class="col-md-12">
                 <div class="btn-group dropup">
-                    <button class="btn btn-sm btn-outline-secondary text-white rounded dropdown-toggle" type="button" id="table_option_dropdown_country" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <button class="btn btn-sm btn-outline-secondary text-white rounded dropdown-toggle" style="
+                    display: none;
+                "  type="button" id="table_option_dropdown_country" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <i class="fas fa-globe"></i>
                         {{ $site_prefer_country_name }}
                     </button>
