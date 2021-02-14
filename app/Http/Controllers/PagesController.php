@@ -1112,7 +1112,7 @@ class PagesController extends Controller
 
             $all_states = State::whereHas('items', function ($query) use ($category, $all_child_categories_ids, $settings, $site_prefer_country_id) {
                 $query->join('category_item as ci', 'items.id', '=', 'ci.item_id')
-                    ->whereIn('ci.category_id', $all_child_categories_ids)
+                    ->whereIn('ci.category_id', $all_child_categories_ids);
          
             }, '>', 0)->orderBy('state_name')->get();
 
