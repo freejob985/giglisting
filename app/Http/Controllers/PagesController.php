@@ -83,10 +83,10 @@ class PagesController extends Controller
 
         } else {
             if (Session::get('lang') == "") {
-                Session::put('lang', Session::get('lang'));
+                Session::put('lang', "en");
                 //  dd("Catch errors for script and full tracking ( 1 )");
             } else {
-                Session::put('user_prefer_language', $user_prefer_language);
+                Session::put('user_prefer_language', Session::get('lang'));
                 Session::put('lang', Session::get('lang'));
             }
 
