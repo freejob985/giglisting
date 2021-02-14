@@ -735,7 +735,7 @@ class PagesController extends Controller
         }
 
         $paid_items_query->where("items.item_status", Item::ITEM_PUBLISHED)
-            ->where('items.country_id', $site_prefer_country_id)
+          
             ->where('items.item_featured', Item::ITEM_FEATURED)
             ->where('lang', Session::get('lang'))
             ->where(function ($query) use ($paid_user_ids) {
@@ -777,7 +777,7 @@ class PagesController extends Controller
         }
 
         $free_items_query->where("items.item_status", Item::ITEM_PUBLISHED)
-            ->where('items.country_id', $site_prefer_country_id)
+      
             ->where('items.item_featured_by_admin', Item::ITEM_NOT_FEATURED_BY_ADMIN)
             ->whereIn('items.user_id', $free_user_ids);
 
@@ -881,7 +881,7 @@ class PagesController extends Controller
         $all_states = Country::find($site_prefer_country_id)
             ->states()
             ->withCount(['items' => function ($query) use ($settings, $site_prefer_country_id) {
-                $query->where('country_id', $site_prefer_country_id);
+
             }])
             ->orderBy('state_name')->get();
 
@@ -992,7 +992,7 @@ class PagesController extends Controller
                     //->where("items.category_id", $category->id)
                         ->where("items.item_status", Item::ITEM_PUBLISHED)
                         ->where('items.item_featured', Item::ITEM_FEATURED)
-                        ->where('items.country_id', $site_prefer_country_id)
+                 
                         ->where('u.email_verified_at', '!=', null)
                         ->where('u.user_suspended', User::USER_NOT_SUSPENDED);
                 })
@@ -1020,7 +1020,7 @@ class PagesController extends Controller
                     $query->whereIn("ci.category_id", $all_child_categories_ids)
                     //->where("items.category_id", $category->id)
                         ->where("items.item_status", Item::ITEM_PUBLISHED)
-                        ->where('items.country_id', $site_prefer_country_id)
+             
                         ->where('u.email_verified_at', '!=', null)
                         ->where('u.user_suspended', User::USER_NOT_SUSPENDED);
                 })
@@ -1113,7 +1113,7 @@ class PagesController extends Controller
             $all_states = State::whereHas('items', function ($query) use ($category, $all_child_categories_ids, $settings, $site_prefer_country_id) {
                 $query->join('category_item as ci', 'items.id', '=', 'ci.item_id')
                     ->whereIn('ci.category_id', $all_child_categories_ids)
-                    ->where('country_id', $site_prefer_country_id);
+         
             }, '>', 0)->orderBy('state_name')->get();
 
             /**
@@ -1219,7 +1219,6 @@ class PagesController extends Controller
                         ->where('items.state_id', $state->id)
                         ->where("items.item_status", Item::ITEM_PUBLISHED)
                         ->where('items.item_featured', Item::ITEM_FEATURED)
-                        ->where('items.country_id', $site_prefer_country_id)
                         ->where('u.email_verified_at', '!=', null)
                         ->where('u.user_suspended', User::USER_NOT_SUSPENDED);
                 })
@@ -1248,7 +1247,6 @@ class PagesController extends Controller
                     //->where("items.category_id", $category->id)
                         ->where('items.state_id', $state->id)
                         ->where("items.item_status", Item::ITEM_PUBLISHED)
-                        ->where('items.country_id', $site_prefer_country_id)
                         ->where('u.email_verified_at', '!=', null)
                         ->where('u.user_suspended', User::USER_NOT_SUSPENDED);
                 })
@@ -1343,7 +1341,7 @@ class PagesController extends Controller
                     ->whereIn('ci.category_id', $all_child_categories_ids)
                 //->where('category_id', $category->id)
                     ->where('state_id', $state->id)
-                    ->where('country_id', $site_prefer_country_id);
+          
             }, '>', 0)->orderBy('city_name')->get();
 
             /**
@@ -1452,7 +1450,6 @@ class PagesController extends Controller
                         ->where('items.city_id', $city->id)
                         ->where("items.item_status", Item::ITEM_PUBLISHED)
                         ->where('items.item_featured', Item::ITEM_FEATURED)
-                        ->where('items.country_id', $site_prefer_country_id)
                         ->where('u.email_verified_at', '!=', null)
                         ->where('u.user_suspended', User::USER_NOT_SUSPENDED);
                 })
@@ -1482,7 +1479,6 @@ class PagesController extends Controller
                         ->where('items.state_id', $state->id)
                         ->where('items.city_id', $city->id)
                         ->where("items.item_status", Item::ITEM_PUBLISHED)
-                        ->where('items.country_id', $site_prefer_country_id)
                         ->where('u.email_verified_at', '!=', null)
                         ->where('u.user_suspended', User::USER_NOT_SUSPENDED);
                 })
@@ -1577,7 +1573,6 @@ class PagesController extends Controller
                     ->whereIn('ci.category_id', $all_child_categories_ids)
                 //->where('category_id', $category->id)
                     ->where('state_id', $state->id)
-                    ->where('country_id', $site_prefer_country_id);
             }, '>', 0)->orderBy('city_name')->get();
 
             /**
@@ -1662,7 +1657,7 @@ class PagesController extends Controller
                     $query->where("items.state_id", $state->id)
                         ->where("items.item_status", Item::ITEM_PUBLISHED)
                         ->where('items.item_featured', Item::ITEM_FEATURED)
-                        ->where('items.country_id', $site_prefer_country_id)
+              
                         ->where('u.email_verified_at', '!=', null)
                         ->where('u.user_suspended', User::USER_NOT_SUSPENDED);
                 })
@@ -1689,7 +1684,7 @@ class PagesController extends Controller
                 ->where(function ($query) use ($state, $settings, $site_prefer_country_id) {
                     $query->where("items.state_id", $state->id)
                         ->where("items.item_status", Item::ITEM_PUBLISHED)
-                        ->where('items.country_id', $site_prefer_country_id)
+          
                         ->where('u.email_verified_at', '!=', null)
                         ->where('u.user_suspended', User::USER_NOT_SUSPENDED);
                 })
@@ -1781,7 +1776,7 @@ class PagesController extends Controller
 
             $all_cities = City::whereHas('items', function ($query) use ($state, $settings, $site_prefer_country_id) {
                 $query->where('state_id', $state->id)
-                    ->where('country_id', $site_prefer_country_id);
+         
             }, '>', 0)->orderBy('city_name')->get();
 
             /**
@@ -1866,7 +1861,7 @@ class PagesController extends Controller
                         ->where("items.city_id", $city->id)
                         ->where("items.item_status", Item::ITEM_PUBLISHED)
                         ->where('items.item_featured', Item::ITEM_FEATURED)
-                        ->where('items.country_id', $site_prefer_country_id)
+                
                         ->where('u.email_verified_at', '!=', null)
                         ->where('u.user_suspended', User::USER_NOT_SUSPENDED);
                 })
@@ -1893,7 +1888,7 @@ class PagesController extends Controller
                     $query->where("items.state_id", $state->id)
                         ->where("items.city_id", $city->id)
                         ->where("items.item_status", Item::ITEM_PUBLISHED)
-                        ->where('items.country_id', $site_prefer_country_id)
+                     
                         ->where('u.email_verified_at', '!=', null)
                         ->where('u.user_suspended', User::USER_NOT_SUSPENDED);
                 })
@@ -1985,7 +1980,7 @@ class PagesController extends Controller
 
             $all_cities = City::whereHas('items', function ($query) use ($state, $settings, $site_prefer_country_id) {
                 $query->where('state_id', $state->id)
-                    ->where('country_id', $site_prefer_country_id);
+           
             }, '>', 0)->orderBy('city_name')->get();
 
             /**
@@ -2036,7 +2031,7 @@ class PagesController extends Controller
         $site_prefer_country_id = app('site_prefer_country_id');
 
         $item = Item::where('item_slug', $item_slug)
-            ->where('country_id', $site_prefer_country_id)
+        
             ->where('item_status', Item::ITEM_PUBLISHED)
             ->get()->first();
 
@@ -2092,7 +2087,7 @@ class PagesController extends Controller
 
                     $nearby_items = Item::selectRaw('items.*, ( 6367 * acos( cos( radians( ? ) ) * cos( radians( item_lat ) ) * cos( radians( item_lng ) - radians( ? ) ) + sin( radians( ? ) ) * sin( radians( item_lat ) ) ) ) AS distance', [$latitude, $longitude, $latitude])
                         ->where('id', '!=', $item->id)
-                        ->where('country_id', $site_prefer_country_id)
+                   
                         ->where('item_status', Item::ITEM_PUBLISHED)
                         ->having('distance', '<', 500)
                         ->orderBy('distance')
@@ -2123,7 +2118,7 @@ class PagesController extends Controller
                         ->where('items.id', '!=', $item->id)
                         ->where('items.item_status', Item::ITEM_PUBLISHED)
                         ->where('items.state_id', $item->state_id)
-                        ->where('items.country_id', $site_prefer_country_id)
+               
                         ->having('distance', '<', 500)
                         ->distinct('items.id')
                         ->orderBy('distance')
@@ -2483,7 +2478,7 @@ class PagesController extends Controller
         $site_prefer_country_id = app('site_prefer_country_id');
 
         $item = Item::where('item_slug', $item_slug)
-            ->where('country_id', $site_prefer_country_id)
+     
             ->where('item_status', Item::ITEM_PUBLISHED)
             ->get()->first();
 
@@ -2552,7 +2547,7 @@ class PagesController extends Controller
         $site_prefer_country_id = app('site_prefer_country_id');
 
         $item = Item::where('item_slug', $item_slug)
-            ->where('country_id', $site_prefer_country_id)
+      
             ->where('item_status', Item::ITEM_PUBLISHED)
             ->get()->first();
 
@@ -2594,7 +2589,7 @@ class PagesController extends Controller
         $site_prefer_country_id = app('site_prefer_country_id');
 
         $item = Item::where('item_slug', $item_slug)
-            ->where('country_id', $site_prefer_country_id)
+       
             ->where('item_status', Item::ITEM_PUBLISHED)
             ->get()->first();
 
