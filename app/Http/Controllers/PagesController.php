@@ -75,9 +75,9 @@ class PagesController extends Controller
 
         if (Auth::check()) {
             $login_user = Auth::user();
-            $login_user->user_prefer_language = $user_prefer_language;
+            $login_user->user_prefer_language = Session::get('lang');
             $login_user->save();
-            Session::put('user_prefer_language', $user_prefer_language);
+            Session::put('user_prefer_language', Session::get('lang'));
 
             Session::put('lang', "en");
 
