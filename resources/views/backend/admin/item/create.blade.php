@@ -40,11 +40,11 @@
                 <div class="row mb-2">
                     <div class="col-12">
                         <span class="text-lg text-gray-800">{{ __('backend.item.select-category') }}</span>
-                        <form method="POST" action="{{ route('admin.items.store') }}" >
+                        <form method="POST" action="{{ route('admin.items.store') }}">
                             <div class="form-group mr-2">
                                 <select multiple size="{{ count($all_categories) }}#itmall"
-                                    class="custom-select @error('category') is-invalid @enderror" name="category[]"
-                                    onchange="$('#item-create-form').remove();">
+                                    class="custom-select all_categories @error('category') is-invalid @enderror"
+                                    name="category[]" onchange="$('#item-create-form').remove();">
                                     @foreach($all_categories as $key => $category)
                                     <option value="{{ $category['category_id'] }}"
                                         {{ in_array($category['category_id'], empty($category_ids) ? array() : $category_ids) ? 'selected' : '' }}>
@@ -59,7 +59,7 @@
                             </div>
                             <button type="submit"
                                 class="btn btnitem btn-primary mr-2">{{ __('backend.item.load-form') }}</button>
-                
+
                     </div>
                 </div>
             </div>
@@ -67,453 +67,445 @@
 
         <div class="row " id="itmall">
             <div class="col-12">
-          
-   
-                    @csrf
 
-                    <hr />
-                    <div class="form-row mb-3">
-                        <div class="col-md-12">
-                            <span class="text-lg text-gray-800">{{ __('backend.item.general-info') }}</span>
-                            <small class="form-text text-muted">
-                            </small>
-                        </div>
+
+                @csrf
+
+                <hr />
+                <div class="form-row mb-3">
+                    <div class="col-md-12">
+                        <span class="text-lg text-gray-800">{{ __('backend.item.general-info') }}</span>
+                        <small class="form-text text-muted">
+                        </small>
                     </div>
-                    <div class="form-row mb-3">
-                        <div class="col-md-3">
-                            <label for="item_title" class="text-black">{{ __('backend.item.title') }}</label>
-                            <input id="item_title" type="text"
-                                class="form-control @error('item_title') is-invalid @enderror" name="item_title"
-                                value="{{ old('item_title') }}">
-                            @error('item_title')
-                            <span class="invalid-tooltip">
-                                <strong>{{ $message }}</strong>
-                            </span>
-                            @enderror
+                </div>
+                <div class="form-row mb-3">
+                    <div class="col-md-3">
+                        <label for="item_title" class="text-black">{{ __('backend.item.title') }}</label>
+                        <input id="item_title" type="text"
+                            class="form-control @error('item_title') is-invalid @enderror" name="item_title"
+                            value="{{ old('item_title') }}">
+                        @error('item_title')
+                        <span class="invalid-tooltip">
+                            <strong>{{ $message }}</strong>
+                        </span>
+                        @enderror
 
-                            @foreach($category_ids as $key => $category_id)
-                            <input name="category[]" value="{{ $category_id }}" type="hidden" class="input_category_id">
-                            @endforeach
-
-                        </div>
-
-                        <div class="col-md-2">
-                            <label for="item_status" class="text-black">{{ __('backend.item.status') }}</label>
-                            <select class="custom-select @error('item_status') is-invalid @enderror" name="item_status">
-
-                                <option value="{{ \App\Item::ITEM_SUBMITTED }}">{{ __('backend.item.submitted') }}
-                                </option>
-                                <option value="{{ \App\Item::ITEM_PUBLISHED }}" selected>
-                                    {{ __('backend.item.published') }}</option>
-                                <option value="{{ \App\Item::ITEM_SUSPENDED }}">{{ __('backend.item.suspended') }}
-                                </option>
-
-                            </select>
-                            @error('item_status')
-                            <span class="invalid-tooltip">
-                                <strong>{{ $message }}</strong>
-                            </span>
-                            @enderror
-                        </div>
-
-                        <div class="col-md-2">
-                            <label for="item_featured" class="text-black">{{ __('backend.item.featured') }}</label>
-                            <select class="custom-select @error('item_featured') is-invalid @enderror"
-                                name="item_featured">
-
-                                <option value="{{ \App\Item::ITEM_NOT_FEATURED }}" selected>
-                                    {{ __('backend.shared.no') }}</option>
-                                <option value="{{ \App\Item::ITEM_FEATURED }}">{{ __('backend.shared.yes') }}</option>
-
-                            </select>
-                            @error('item_featured')
-                            <span class="invalid-tooltip">
-                                <strong>{{ $message }}</strong>
-                            </span>
-                            @enderror
-                        </div>
-
-                        <div class="col-md-5">
-                            <label for="item_address" class="text-black">{{ __('backend.item.address') }}</label>
-                            <input id="item_address" type="text"
-                                class="form-control @error('item_address') is-invalid @enderror" name="item_address"
-                                value="{{ old('item_address') }}">
-                            @error('item_address')
-                            <span class="invalid-tooltip">
-                                <strong>{{ $message }}</strong>
-                            </span>
-                            @enderror
-                        </div>
-                    </div>
-
-                    <div class="form-row mb-3">
-
-                        <div class="col-md-12">
-                            <div class="form-check form-check-inline">
-                                <input {{ old('item_address_hide') == 1 ? 'checked' : '' }} class="form-check-input"
-                                    type="checkbox" id="item_address_hide" name="item_address_hide" value="1">
-                                <label class="form-check-label" for="item_address_hide">
-                                    {{ __('backend.item.hide-address') }}
-                                    <small class="text-muted">
-                                        {{ __('backend.item.hide-address-help') }}
-                                    </small>
-                                </label>
-                            </div>
-                            @error('item_address_hide')
-                            <span class="invalid-tooltip">
-                                <strong>{{ $message }}</strong>
-                            </span>
-                            @enderror
-                        </div>
-                    </div>
-
-                    <div class="form-row mb-3">
-
-                        <div class="col-md-3">
-                            <label for="select_country_id"
-                                class="text-black">{{ __('backend.setting.country') }}</label>
-                            <select id="select_country_id"
-                                class="custom-select @error('country_id') is-invalid @enderror" name="country_id">
-                                <option selected>{{ __('prefer_country.select-country') }}</option>
-                                @foreach($all_countries as $all_countries_key => $country)
-                                <option value="{{ $country->id }}"
-                                    {{ $country->id == old('country_id') ? 'selected' : '' }}>
-                                    {{ $country->country_name }}</option>
-                                @endforeach
-                            </select>
-                            @error('country_id')
-                            <span class="invalid-tooltip">
-                                <strong>{{ $message }}</strong>
-                            </span>
-                            @enderror
-                        </div>
-
-                        <div class="col-md-3">
-                            <label for="select_state_id" class="text-black">{{ __('backend.state.state') }}</label>
-                            <select id="select_state_id" class="custom-select @error('state_id') is-invalid @enderror"
-                                name="state_id">
-                                <option selected>{{ __('backend.item.select-state') }}</option>
-                            </select>
-                            @error('state_id')
-                            <span class="invalid-tooltip">
-                                <strong>{{ $message }}</strong>
-                            </span>
-                            @enderror
-                        </div>
-
-                        <div class="col-md-3">
-                            <label for="select_city_id" class="text-black">{{ __('backend.city.city') }}</label>
-                            <select id="select_city_id" class="custom-select @error('city_id') is-invalid @enderror"
-                                name="city_id">
-                                <option selected>{{ __('backend.item.select-city') }}</option>
-                            </select>
-                            @error('city_id')
-                            <span class="invalid-tooltip">
-                                <strong>{{ $message }}</strong>
-                            </span>
-                            @enderror
-                        </div>
-
-                        <div class="col-md-3">
-                            <label for="item_postal_code"
-                                class="text-black">{{ __('backend.item.postal-code') }}</label>
-                            <input id="item_postal_code" type="text"
-                                class="form-control @error('item_postal_code') is-invalid @enderror"
-                                name="item_postal_code" value="{{ old('item_postal_code') }}">
-                            @error('item_postal_code')
-                            <span class="invalid-tooltip">
-                                <strong>{{ $message }}</strong>
-                            </span>
-                            @enderror
-                        </div>
-
-                    </div>
-
-                    <div class="form-row mb-3">
-
-                        <div class="col-md-3">
-                            <label for="item_lat" class="text-black">{{ __('backend.item.lat') }}</label>
-                            <input id="item_lat" type="text"
-                                class="form-control @error('item_lat') is-invalid @enderror" name="item_lat"
-                                value="{{ old('item_lat') }}" aria-describedby="latHelpBlock">
-                            <small id="latHelpBlock" class="form-text text-muted">
-                                <a
-                                    class="lat_lng_select_button btn btn-sm btn-primary text-white">{{ __('backend.item.select-map') }}</a>
-                            </small>
-                            @error('item_lat')
-                            <span class="invalid-tooltip">
-                                <strong>{{ $message }}</strong>
-                            </span>
-                            @enderror
-                        </div>
-
-                        <div class="col-md-3">
-                            <label for="item_lng" class="text-black">{{ __('backend.item.lng') }}</label>
-                            <input id="item_lng" type="text"
-                                class="form-control @error('item_lng') is-invalid @enderror" name="item_lng"
-                                value="{{ old('item_lng') }}" aria-describedby="lngHelpBlock">
-                            <small id="lngHelpBlock" class="form-text text-muted">
-                                <a
-                                    class="lat_lng_select_button btn btn-sm btn-primary text-white">{{ __('backend.item.select-map') }}</a>
-                            </small>
-                            @error('item_lng')
-                            <span class="invalid-tooltip">
-                                <strong>{{ $message }}</strong>
-                            </span>
-                            @enderror
-                        </div>
-
-                        <div class="col-md-3">
-                            <label for="item_phone" class="text-black">{{ __('backend.item.phone') }}</label>
-                            <input id="item_phone" type="text"
-                                class="form-control @error('item_phone') is-invalid @enderror" name="item_phone"
-                                value="{{ old('item_phone') }}">
-                            @error('item_phone')
-                            <span class="invalid-tooltip">
-                                <strong>{{ $message }}</strong>
-                            </span>
-                            @enderror
-                        </div>
-
-                        <div class="col-md-3">
-                            <label for="item_youtube_id"
-                                class="text-black">{{ __('customization.item.youtube-id') }}</label>
-                            <input id="item_youtube_id" type="text"
-                                class="form-control @error('item_youtube_id') is-invalid @enderror"
-                                name="item_youtube_id" value="{{ old('item_youtube_id') }}">
-                            @error('item_youtube_id')
-                            <span class="invalid-tooltip">
-                                <strong>{{ $message }}</strong>
-                            </span>
-                            @enderror
-                        </div>
-
-                    </div>
-
-                    <div class="form-row mb-3">
-
-                        <div class="col-md-12">
-                            <label for="item_description"
-                                class="text-black">{{ __('backend.item.description') }}</label>
-                            <textarea class="form-control @error('item_description') is-invalid @enderror"
-                                id="item_description" rows="5"
-                                name="item_description">{{ old('item_description') }}</textarea>
-                            @error('item_description')
-                            <span class="invalid-tooltip">
-                                <strong>{{ $message }}</strong>
-                            </span>
-                            @enderror
-                        </div>
-                    </div>
-
-                    <!-- Start web & social media -->
-                    <div class="form-row mb-3">
-                        <div class="col-md-3">
-                            <label for="item_website" class="text-black">{{ __('backend.item.website') }}</label>
-                            <input id="item_website" type="text"
-                                class="form-control @error('item_website') is-invalid @enderror" name="item_website"
-                                value="{{ old('item_website') }}">
-                            <small id="linkHelpBlock" class="form-text text-muted">
-                                {{ __('backend.shared.url-help') }}
-                            </small>
-                            @error('item_website')
-                            <span class="invalid-tooltip">
-                                <strong>{{ $message }}</strong>
-                            </span>
-                            @enderror
-                        </div>
-
-                        <div class="col-md-3">
-                            <label for="item_social_facebook"
-                                class="text-black">{{ __('backend.item.facebook') }}</label>
-                            <input id="item_social_facebook" type="text"
-                                class="form-control @error('item_social_facebook') is-invalid @enderror"
-                                name="item_social_facebook" value="{{ old('item_social_facebook') }}">
-                            <small id="linkHelpBlock" class="form-text text-muted">
-                                {{ __('backend.shared.url-help') }}
-                            </small>
-                            @error('item_social_facebook')
-                            <span class="invalid-tooltip">
-                                <strong>{{ $message }}</strong>
-                            </span>
-                            @enderror
-                        </div>
-
-                        <div class="col-md-3">
-                            <label for="item_social_twitter" class="text-black">{{ __('backend.item.twitter') }}</label>
-                            <input id="item_social_twitter" type="text"
-                                class="form-control @error('item_social_twitter') is-invalid @enderror"
-                                name="item_social_twitter" value="{{ old('item_social_twitter') }}">
-                            <small id="linkHelpBlock" class="form-text text-muted">
-                                {{ __('backend.shared.url-help') }}
-                            </small>
-                            @error('item_social_twitter')
-                            <span class="invalid-tooltip">
-                                <strong>{{ $message }}</strong>
-                            </span>
-                            @enderror
-                        </div>
-
-                        <div class="col-md-3">
-                            <label for="item_social_linkedin"
-                                class="text-black">{{ __('backend.item.linkedin') }}</label>
-                            <input id="item_social_linkedin" type="text"
-                                class="form-control @error('item_social_linkedin') is-invalid @enderror"
-                                name="item_social_linkedin" value="{{ old('item_social_linkedin') }}">
-                            <small id="linkHelpBlock" class="form-text text-muted">
-                                {{ __('backend.shared.url-help') }}
-                            </small>
-                            @error('item_social_linkedin')
-                            <span class="invalid-tooltip">
-                                <strong>{{ $message }}</strong>
-                            </span>
-                            @enderror
-                        </div>
-
-                    </div>
-                    <!-- End web & social media -->
-
-                    <!-- Start custom field section -->
-                    <div class="form-row mb-3">
-                        <div class="col-md-12">
-                            <span class="text-lg text-gray-800">{{ __('backend.item.custom-fields') }}</span>
-                            <small class="form-text text-muted">
-                                {{ __('backend.item.custom-field-help') }}
-                            </small>
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        @foreach($all_customFields as $key => $customField)
-                        <div class="col-md-4 mb-3">
-                            @if($customField->custom_field_type == \App\CustomField::TYPE_TEXT)
-                            <label for="{{ str_slug($customField->custom_field_name . $customField->id) }}"
-                                class="text-black">{{ $customField->custom_field_name }}</label>
-                            <textarea
-                                class="form-control @error(str_slug($customField->custom_field_name . $customField->id)) is-invalid @enderror"
-                                id="{{ str_slug($customField->custom_field_name . $customField->id) }}" rows="5"
-                                name="{{ str_slug($customField->custom_field_name . $customField->id) }}">{{ old(str_slug($customField->custom_field_name . $customField->id)) }}</textarea>
-                            @error(str_slug($customField->custom_field_name . $customField->id))
-                            <span class="invalid-tooltip">
-                                <strong>{{ $message }}</strong>
-                            </span>
-                            @enderror
-                            @endif
-                            @if($customField->custom_field_type == \App\CustomField::TYPE_SELECT)
-                            <label for="{{ str_slug($customField->custom_field_name . $customField->id) }}"
-                                class="text-black">{{ $customField->custom_field_name }}</label>
-                            <select class="custom-select"
-                                name="{{ str_slug($customField->custom_field_name . $customField->id) }}"
-                                id="{{ str_slug($customField->custom_field_name . $customField->id) }}">
-                                @foreach(explode(',', $customField->custom_field_seed_value) as $key =>
-                                $custom_field_value)
-                                <option value="{{ $custom_field_value }}"
-                                    {{ old(str_slug($customField->custom_field_name . $customField->id)) == $custom_field_value ? 'selected' : '' }}>
-                                    {{ $custom_field_value }}</option>
-                                @endforeach
-                            </select>
-                            @error(str_slug($customField->custom_field_name . $customField->id))
-                            <span class="invalid-tooltip">
-                                <strong>{{ $message }}</strong>
-                            </span>
-                            @enderror
-                            @endif
-                            @if($customField->custom_field_type == \App\CustomField::TYPE_MULTI_SELECT)
-                            <label for="{{ str_slug($customField->custom_field_name . $customField->id) }}"
-                                class="text-black">{{ $customField->custom_field_name }}</label>
-                            <select multiple class="custom-select"
-                                name="{{ str_slug($customField->custom_field_name . $customField->id) }}[]"
-                                id="{{ str_slug($customField->custom_field_name . $customField->id) }}">
-                                @foreach(explode(',', $customField->custom_field_seed_value) as $key =>
-                                $custom_field_value)
-                                <option value="{{ $custom_field_value }}"
-                                    {{ old(str_slug($customField->custom_field_name . $customField->id)) == $custom_field_value ? 'selected' : '' }}>
-                                    {{ $custom_field_value }}</option>
-                                @endforeach
-                            </select>
-                            @error($customField->custom_field_name . $customField->id)
-                            <span class="invalid-tooltip">
-                                <strong>{{ $message }}</strong>
-                            </span>
-                            @enderror
-                            @endif
-                            @if($customField->custom_field_type == \App\CustomField::TYPE_LINK)
-                            <label for="{{ str_slug($customField->custom_field_name . $customField->id) }}"
-                                class="text-black">{{ $customField->custom_field_name }}</label>
-                            <input id="{{ str_slug($customField->custom_field_name . $customField->id) }}" type="text"
-                                class="form-control @error(str_slug($customField->custom_field_name . $customField->id)) is-invalid @enderror"
-                                name="{{ str_slug($customField->custom_field_name . $customField->id) }}"
-                                value="{{ old(str_slug($customField->custom_field_name . $customField->id)) }}"
-                                aria-describedby="linkHelpBlock">
-                            <small id="linkHelpBlock" class="form-text text-muted">
-                                {{ __('backend.shared.url-help') }}
-                            </small>
-                            @error(str_slug($customField->custom_field_name . $customField->id))
-                            <span class="invalid-tooltip">
-                                <strong>{{ $message }}</strong>
-                            </span>
-                            @enderror
-                            @endif
-                        </div>
+                        @foreach($category_ids as $key => $category_id)
+                        <input name="category[]" value="{{ $category_id }}" type="hidden" class="input_category_id">
                         @endforeach
-                    </div>
-                    <!-- End custom field section -->
 
-                    <div class="form-row mb-3">
-                        <div class="col-md-6">
-                            <span class="text-lg text-gray-800">{{ __('backend.item.feature-image') }}</span>
-                            <small class="form-text text-muted">
-                                {{ __('backend.item.feature-image-help') }}
-                            </small>
-                            @error('feature_image')
-                            <span class="invalid-tooltip">
-                                <strong>{{ $message }}</strong>
-                            </span>
-                            @enderror
-                            <div class="row mt-3">
-                                <div class="col-8">
-                                    <button id="upload_image" type="button"
-                                        class="btn btn-primary btn-block mb-2">{{ __('backend.item.select-image') }}</button>
-                                    <img id="image_preview"
-                                        src="{{ asset('frontend/images/placeholder/full_item_feature_image.webp') }}"
-                                        class="img-responsive">
-                                    <input id="feature_image" type="hidden" name="feature_image">
+                    </div>
+
+                    <div class="col-md-2">
+                        <label for="item_status" class="text-black">{{ __('backend.item.status') }}</label>
+                        <select class="custom-select @error('item_status') is-invalid @enderror" name="item_status">
+
+                            <option value="{{ \App\Item::ITEM_SUBMITTED }}">{{ __('backend.item.submitted') }}
+                            </option>
+                            <option value="{{ \App\Item::ITEM_PUBLISHED }}" selected>
+                                {{ __('backend.item.published') }}</option>
+                            <option value="{{ \App\Item::ITEM_SUSPENDED }}">{{ __('backend.item.suspended') }}
+                            </option>
+
+                        </select>
+                        @error('item_status')
+                        <span class="invalid-tooltip">
+                            <strong>{{ $message }}</strong>
+                        </span>
+                        @enderror
+                    </div>
+
+                    <div class="col-md-2">
+                        <label for="item_featured" class="text-black">{{ __('backend.item.featured') }}</label>
+                        <select class="custom-select @error('item_featured') is-invalid @enderror" name="item_featured">
+
+                            <option value="{{ \App\Item::ITEM_NOT_FEATURED }}" selected>
+                                {{ __('backend.shared.no') }}</option>
+                            <option value="{{ \App\Item::ITEM_FEATURED }}">{{ __('backend.shared.yes') }}</option>
+
+                        </select>
+                        @error('item_featured')
+                        <span class="invalid-tooltip">
+                            <strong>{{ $message }}</strong>
+                        </span>
+                        @enderror
+                    </div>
+
+                    <div class="col-md-5">
+                        <label for="item_address" class="text-black">{{ __('backend.item.address') }}</label>
+                        <input id="item_address" type="text"
+                            class="form-control @error('item_address') is-invalid @enderror" name="item_address"
+                            value="{{ old('item_address') }}">
+                        @error('item_address')
+                        <span class="invalid-tooltip">
+                            <strong>{{ $message }}</strong>
+                        </span>
+                        @enderror
+                    </div>
+                </div>
+
+                <div class="form-row mb-3">
+
+                    <div class="col-md-12">
+                        <div class="form-check form-check-inline">
+                            <input {{ old('item_address_hide') == 1 ? 'checked' : '' }} class="form-check-input"
+                                type="checkbox" id="item_address_hide" name="item_address_hide" value="1">
+                            <label class="form-check-label" for="item_address_hide">
+                                {{ __('backend.item.hide-address') }}
+                                <small class="text-muted">
+                                    {{ __('backend.item.hide-address-help') }}
+                                </small>
+                            </label>
+                        </div>
+                        @error('item_address_hide')
+                        <span class="invalid-tooltip">
+                            <strong>{{ $message }}</strong>
+                        </span>
+                        @enderror
+                    </div>
+                </div>
+
+                <div class="form-row mb-3">
+
+                    <div class="col-md-3">
+                        <label for="select_country_id" class="text-black">{{ __('backend.setting.country') }}</label>
+                        <select id="select_country_id" class="custom-select @error('country_id') is-invalid @enderror"
+                            name="country_id">
+                            <option selected>{{ __('prefer_country.select-country') }}</option>
+                            @foreach($all_countries as $all_countries_key => $country)
+                            <option value="{{ $country->id }}"
+                                {{ $country->id == old('country_id') ? 'selected' : '' }}>
+                                {{ $country->country_name }}</option>
+                            @endforeach
+                        </select>
+                        @error('country_id')
+                        <span class="invalid-tooltip">
+                            <strong>{{ $message }}</strong>
+                        </span>
+                        @enderror
+                    </div>
+
+                    <div class="col-md-3">
+                        <label for="select_state_id" class="text-black">{{ __('backend.state.state') }}</label>
+                        <select id="select_state_id" class="custom-select @error('state_id') is-invalid @enderror"
+                            name="state_id">
+                            <option selected>{{ __('backend.item.select-state') }}</option>
+                        </select>
+                        @error('state_id')
+                        <span class="invalid-tooltip">
+                            <strong>{{ $message }}</strong>
+                        </span>
+                        @enderror
+                    </div>
+
+                    <div class="col-md-3">
+                        <label for="select_city_id" class="text-black">{{ __('backend.city.city') }}</label>
+                        <select id="select_city_id" class="custom-select @error('city_id') is-invalid @enderror"
+                            name="city_id">
+                            <option selected>{{ __('backend.item.select-city') }}</option>
+                        </select>
+                        @error('city_id')
+                        <span class="invalid-tooltip">
+                            <strong>{{ $message }}</strong>
+                        </span>
+                        @enderror
+                    </div>
+
+                    <div class="col-md-3">
+                        <label for="item_postal_code" class="text-black">{{ __('backend.item.postal-code') }}</label>
+                        <input id="item_postal_code" type="text"
+                            class="form-control @error('item_postal_code') is-invalid @enderror" name="item_postal_code"
+                            value="{{ old('item_postal_code') }}">
+                        @error('item_postal_code')
+                        <span class="invalid-tooltip">
+                            <strong>{{ $message }}</strong>
+                        </span>
+                        @enderror
+                    </div>
+
+                </div>
+
+                <div class="form-row mb-3">
+
+                    <div class="col-md-3">
+                        <label for="item_lat" class="text-black">{{ __('backend.item.lat') }}</label>
+                        <input id="item_lat" type="text" class="form-control @error('item_lat') is-invalid @enderror"
+                            name="item_lat" value="{{ old('item_lat') }}" aria-describedby="latHelpBlock">
+                        <small id="latHelpBlock" class="form-text text-muted">
+                            <a
+                                class="lat_lng_select_button btn btn-sm btn-primary text-white">{{ __('backend.item.select-map') }}</a>
+                        </small>
+                        @error('item_lat')
+                        <span class="invalid-tooltip">
+                            <strong>{{ $message }}</strong>
+                        </span>
+                        @enderror
+                    </div>
+
+                    <div class="col-md-3">
+                        <label for="item_lng" class="text-black">{{ __('backend.item.lng') }}</label>
+                        <input id="item_lng" type="text" class="form-control @error('item_lng') is-invalid @enderror"
+                            name="item_lng" value="{{ old('item_lng') }}" aria-describedby="lngHelpBlock">
+                        <small id="lngHelpBlock" class="form-text text-muted">
+                            <a
+                                class="lat_lng_select_button btn btn-sm btn-primary text-white">{{ __('backend.item.select-map') }}</a>
+                        </small>
+                        @error('item_lng')
+                        <span class="invalid-tooltip">
+                            <strong>{{ $message }}</strong>
+                        </span>
+                        @enderror
+                    </div>
+
+                    <div class="col-md-3">
+                        <label for="item_phone" class="text-black">{{ __('backend.item.phone') }}</label>
+                        <input id="item_phone" type="text"
+                            class="form-control @error('item_phone') is-invalid @enderror" name="item_phone"
+                            value="{{ old('item_phone') }}">
+                        @error('item_phone')
+                        <span class="invalid-tooltip">
+                            <strong>{{ $message }}</strong>
+                        </span>
+                        @enderror
+                    </div>
+
+                    <div class="col-md-3">
+                        <label for="item_youtube_id"
+                            class="text-black">{{ __('customization.item.youtube-id') }}</label>
+                        <input id="item_youtube_id" type="text"
+                            class="form-control @error('item_youtube_id') is-invalid @enderror" name="item_youtube_id"
+                            value="{{ old('item_youtube_id') }}">
+                        @error('item_youtube_id')
+                        <span class="invalid-tooltip">
+                            <strong>{{ $message }}</strong>
+                        </span>
+                        @enderror
+                    </div>
+
+                </div>
+
+                <div class="form-row mb-3">
+
+                    <div class="col-md-12">
+                        <label for="item_description" class="text-black">{{ __('backend.item.description') }}</label>
+                        <textarea class="form-control @error('item_description') is-invalid @enderror"
+                            id="item_description" rows="5"
+                            name="item_description">{{ old('item_description') }}</textarea>
+                        @error('item_description')
+                        <span class="invalid-tooltip">
+                            <strong>{{ $message }}</strong>
+                        </span>
+                        @enderror
+                    </div>
+                </div>
+
+                <!-- Start web & social media -->
+                <div class="form-row mb-3">
+                    <div class="col-md-3">
+                        <label for="item_website" class="text-black">{{ __('backend.item.website') }}</label>
+                        <input id="item_website" type="text"
+                            class="form-control @error('item_website') is-invalid @enderror" name="item_website"
+                            value="{{ old('item_website') }}">
+                        <small id="linkHelpBlock" class="form-text text-muted">
+                            {{ __('backend.shared.url-help') }}
+                        </small>
+                        @error('item_website')
+                        <span class="invalid-tooltip">
+                            <strong>{{ $message }}</strong>
+                        </span>
+                        @enderror
+                    </div>
+
+                    <div class="col-md-3">
+                        <label for="item_social_facebook" class="text-black">{{ __('backend.item.facebook') }}</label>
+                        <input id="item_social_facebook" type="text"
+                            class="form-control @error('item_social_facebook') is-invalid @enderror"
+                            name="item_social_facebook" value="{{ old('item_social_facebook') }}">
+                        <small id="linkHelpBlock" class="form-text text-muted">
+                            {{ __('backend.shared.url-help') }}
+                        </small>
+                        @error('item_social_facebook')
+                        <span class="invalid-tooltip">
+                            <strong>{{ $message }}</strong>
+                        </span>
+                        @enderror
+                    </div>
+
+                    <div class="col-md-3">
+                        <label for="item_social_twitter" class="text-black">{{ __('backend.item.twitter') }}</label>
+                        <input id="item_social_twitter" type="text"
+                            class="form-control @error('item_social_twitter') is-invalid @enderror"
+                            name="item_social_twitter" value="{{ old('item_social_twitter') }}">
+                        <small id="linkHelpBlock" class="form-text text-muted">
+                            {{ __('backend.shared.url-help') }}
+                        </small>
+                        @error('item_social_twitter')
+                        <span class="invalid-tooltip">
+                            <strong>{{ $message }}</strong>
+                        </span>
+                        @enderror
+                    </div>
+
+                    <div class="col-md-3">
+                        <label for="item_social_linkedin" class="text-black">{{ __('backend.item.linkedin') }}</label>
+                        <input id="item_social_linkedin" type="text"
+                            class="form-control @error('item_social_linkedin') is-invalid @enderror"
+                            name="item_social_linkedin" value="{{ old('item_social_linkedin') }}">
+                        <small id="linkHelpBlock" class="form-text text-muted">
+                            {{ __('backend.shared.url-help') }}
+                        </small>
+                        @error('item_social_linkedin')
+                        <span class="invalid-tooltip">
+                            <strong>{{ $message }}</strong>
+                        </span>
+                        @enderror
+                    </div>
+
+                </div>
+                <!-- End web & social media -->
+
+                <!-- Start custom field section -->
+                <div class="form-row mb-3">
+                    <div class="col-md-12">
+                        <span class="text-lg text-gray-800">{{ __('backend.item.custom-fields') }}</span>
+                        <small class="form-text text-muted">
+                            {{ __('backend.item.custom-field-help') }}
+                        </small>
+                    </div>
+                </div>
+                <div class="form-row">
+                    @foreach($all_customFields as $key => $customField)
+                    <div class="col-md-4 mb-3">
+                        @if($customField->custom_field_type == \App\CustomField::TYPE_TEXT)
+                        <label for="{{ str_slug($customField->custom_field_name . $customField->id) }}"
+                            class="text-black">{{ $customField->custom_field_name }}</label>
+                        <textarea
+                            class="form-control @error(str_slug($customField->custom_field_name . $customField->id)) is-invalid @enderror"
+                            id="{{ str_slug($customField->custom_field_name . $customField->id) }}" rows="5"
+                            name="{{ str_slug($customField->custom_field_name . $customField->id) }}">{{ old(str_slug($customField->custom_field_name . $customField->id)) }}</textarea>
+                        @error(str_slug($customField->custom_field_name . $customField->id))
+                        <span class="invalid-tooltip">
+                            <strong>{{ $message }}</strong>
+                        </span>
+                        @enderror
+                        @endif
+                        @if($customField->custom_field_type == \App\CustomField::TYPE_SELECT)
+                        <label for="{{ str_slug($customField->custom_field_name . $customField->id) }}"
+                            class="text-black">{{ $customField->custom_field_name }}</label>
+                        <select class="custom-select"
+                            name="{{ str_slug($customField->custom_field_name . $customField->id) }}"
+                            id="{{ str_slug($customField->custom_field_name . $customField->id) }}">
+                            @foreach(explode(',', $customField->custom_field_seed_value) as $key =>
+                            $custom_field_value)
+                            <option value="{{ $custom_field_value }}"
+                                {{ old(str_slug($customField->custom_field_name . $customField->id)) == $custom_field_value ? 'selected' : '' }}>
+                                {{ $custom_field_value }}</option>
+                            @endforeach
+                        </select>
+                        @error(str_slug($customField->custom_field_name . $customField->id))
+                        <span class="invalid-tooltip">
+                            <strong>{{ $message }}</strong>
+                        </span>
+                        @enderror
+                        @endif
+                        @if($customField->custom_field_type == \App\CustomField::TYPE_MULTI_SELECT)
+                        <label for="{{ str_slug($customField->custom_field_name . $customField->id) }}"
+                            class="text-black">{{ $customField->custom_field_name }}</label>
+                        <select multiple class="custom-select"
+                            name="{{ str_slug($customField->custom_field_name . $customField->id) }}[]"
+                            id="{{ str_slug($customField->custom_field_name . $customField->id) }}">
+                            @foreach(explode(',', $customField->custom_field_seed_value) as $key =>
+                            $custom_field_value)
+                            <option value="{{ $custom_field_value }}"
+                                {{ old(str_slug($customField->custom_field_name . $customField->id)) == $custom_field_value ? 'selected' : '' }}>
+                                {{ $custom_field_value }}</option>
+                            @endforeach
+                        </select>
+                        @error($customField->custom_field_name . $customField->id)
+                        <span class="invalid-tooltip">
+                            <strong>{{ $message }}</strong>
+                        </span>
+                        @enderror
+                        @endif
+                        @if($customField->custom_field_type == \App\CustomField::TYPE_LINK)
+                        <label for="{{ str_slug($customField->custom_field_name . $customField->id) }}"
+                            class="text-black">{{ $customField->custom_field_name }}</label>
+                        <input id="{{ str_slug($customField->custom_field_name . $customField->id) }}" type="text"
+                            class="form-control @error(str_slug($customField->custom_field_name . $customField->id)) is-invalid @enderror"
+                            name="{{ str_slug($customField->custom_field_name . $customField->id) }}"
+                            value="{{ old(str_slug($customField->custom_field_name . $customField->id)) }}"
+                            aria-describedby="linkHelpBlock">
+                        <small id="linkHelpBlock" class="form-text text-muted">
+                            {{ __('backend.shared.url-help') }}
+                        </small>
+                        @error(str_slug($customField->custom_field_name . $customField->id))
+                        <span class="invalid-tooltip">
+                            <strong>{{ $message }}</strong>
+                        </span>
+                        @enderror
+                        @endif
+                    </div>
+                    @endforeach
+                </div>
+                <!-- End custom field section -->
+
+                <div class="form-row mb-3">
+                    <div class="col-md-6">
+                        <span class="text-lg text-gray-800">{{ __('backend.item.feature-image') }}</span>
+                        <small class="form-text text-muted">
+                            {{ __('backend.item.feature-image-help') }}
+                        </small>
+                        @error('feature_image')
+                        <span class="invalid-tooltip">
+                            <strong>{{ $message }}</strong>
+                        </span>
+                        @enderror
+                        <div class="row mt-3">
+                            <div class="col-8">
+                                <button id="upload_image" type="button"
+                                    class="btn btn-primary btn-block mb-2">{{ __('backend.item.select-image') }}</button>
+                                <img id="image_preview"
+                                    src="{{ asset('frontend/images/placeholder/full_item_feature_image.webp') }}"
+                                    class="img-responsive">
+                                <input id="feature_image" type="hidden" name="feature_image">
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="col-md-6">
+                        <span class="text-lg text-gray-800">{{ __('backend.item.gallery-images') }}</span>
+                        <small class="form-text text-muted">
+                            {{ __('backend.item.gallery-images-help') }}
+                        </small>
+                        @error('image_gallery')
+                        <span class="invalid-tooltip">
+                            <strong>{{ $message }}</strong>
+                        </span>
+                        @enderror
+                        <div class="row mt-3">
+                            <div class="col-12">
+                                <button id="upload_gallery" type="button"
+                                    class="btn btn-primary btn-block mb-2">{{ __('backend.item.select-images') }}</button>
+                                <div class="row" id="selected-images">
+
                                 </div>
                             </div>
-
-                        </div>
-                        <div class="col-md-6">
-                            <span class="text-lg text-gray-800">{{ __('backend.item.gallery-images') }}</span>
-                            <small class="form-text text-muted">
-                                {{ __('backend.item.gallery-images-help') }}
-                            </small>
-                            @error('image_gallery')
-                            <span class="invalid-tooltip">
-                                <strong>{{ $message }}</strong>
-                            </span>
-                            @enderror
-                            <div class="row mt-3">
-                                <div class="col-12">
-                                    <button id="upload_gallery" type="button"
-                                        class="btn btn-primary btn-block mb-2">{{ __('backend.item.select-images') }}</button>
-                                    <div class="row" id="selected-images">
-
-                                    </div>
-                                </div>
-                            </div>
                         </div>
                     </div>
+                </div>
 
-                    <hr />
-                    <div class="form-row mb-3">
-                        <div class="col-md-12">
-                            <button type="submit" class="btn btn-success py-2 px-4 text-white">
-                                {{ __('backend.shared.create') }}
-                            </button>
-                        </div>
+                <hr />
+                <div class="form-row mb-3">
+                    <div class="col-md-12">
+                        <button type="submit" class="btn btn-success py-2 px-4 text-white">
+                            {{ __('backend.shared.create') }}
+                        </button>
                     </div>
+                </div>
 
                 </form>
-          
+
             </div>
         </div>
     </div>
@@ -895,8 +887,8 @@
 <script>
     $(document).ready(function(){
               $(".btnitem").click(function(){
-              //    alert(1);
-             //   $("#itmall").focus();
+var cat=$('.all_categories').val();
+alert(cat);
                 $('html, body').animate({ scrollTop: $('#itmall').offset().top }, 'slow');
 
       return false;
@@ -904,5 +896,6 @@
             });
 </script>
 
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 
 @endsection
