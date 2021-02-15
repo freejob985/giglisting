@@ -816,7 +816,7 @@
     <script>
       $(document).ready(function(){
               $(".btnitem").click(function(){
-                  alert(1);
+              //    alert(1);
              //   $("#itmall").focus();
                 $('html, body').animate({ scrollTop: $('#itmall').offset().top }, 'slow');
 
