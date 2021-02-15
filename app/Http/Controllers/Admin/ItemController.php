@@ -256,34 +256,34 @@ class ItemController extends Controller
 
         // validate category_ids
         $select_categories = $request->category;
-        if (count($select_categories) > 0) {
-
-            foreach ($select_categories as $select_categories_key => $select_category) {
-                $select_category = Category::find($select_category);
-                if (!$select_category) {
-                    throw ValidationException::withMessages(
-                        [
+        if (!is_null($select_categories)) {
+            if (count($select_categories) > 0) {
+                foreach ($select_categories as $select_categories_key => $select_category) {
+                    $select_category = Category::find($select_category);
+                    if (!$select_category) {
+                        throw ValidationException::withMessages(
+                            [
                             'category' => __('prefer_country.category-not-found'),
-                        ]);
-                }
+                        ]
+                        );
+                    }
 
-                // prepare validate rule for custom fields
-                $custom_field_validation = array();
-                $custom_field_link = $select_category->allCustomFields()
+                    // prepare validate rule for custom fields
+                    $custom_field_validation = array();
+                    $custom_field_link = $select_category->allCustomFields()
                     ->where('custom_field_type', CustomField::TYPE_LINK)
                     ->get();
 
-                if ($custom_field_link->count() > 0) {
-                    foreach ($custom_field_link as $custom_field_link_key => $a_link) {
-                        $custom_field_validation[str_slug($a_link->custom_field_name . $a_link->id)] = 'nullable|url';
+                    if ($custom_field_link->count() > 0) {
+                        foreach ($custom_field_link as $custom_field_link_key => $a_link) {
+                            $custom_field_validation[str_slug($a_link->custom_field_name . $a_link->id)] = 'nullable|url';
+                        }
                     }
+
+                    $validate_rule = array_merge($validate_rule, $custom_field_validation);
                 }
-
-                $validate_rule = array_merge($validate_rule, $custom_field_validation);
-
             }
         }
-
         // validate request
         $request->validate($validate_rule);
 
