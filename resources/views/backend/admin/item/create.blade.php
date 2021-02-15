@@ -40,7 +40,7 @@
                 <div class="row mb-2">
                     <div class="col-12">
                         <span class="text-lg text-gray-800">{{ __('backend.item.select-category') }}</span>
-                        <form class="form-inline" action="{{ route('admin.items.create') }}" method="GET">
+                        <form method="POST" action="{{ route('admin.items.store') }}" >
                             <div class="form-group mr-2">
                                 <select multiple size="{{ count($all_categories) }}#itmall"
                                     class="custom-select @error('category') is-invalid @enderror" name="category[]"
@@ -59,7 +59,7 @@
                             </div>
                             <button type="submit"
                                 class="btn btnitem btn-primary mr-2">{{ __('backend.item.load-form') }}</button>
-                        </form>
+                
                     </div>
                 </div>
             </div>
@@ -68,7 +68,7 @@
         <div class="row " id="itmall">
             <div class="col-12">
           
-                <form method="POST" action="{{ route('admin.items.store') }}" >
+              
                     @csrf
 
                     <hr />
@@ -892,6 +892,7 @@
 </script>
 @endif
 
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <script>
     $(document).ready(function(){
               $(".btnitem").click(function(){
@@ -899,7 +900,7 @@
              //   $("#itmall").focus();
                 $('html, body').animate({ scrollTop: $('#itmall').offset().top }, 'slow');
 
-    //  return false;
+      return false;
               });
             });
 </script>
