@@ -817,7 +817,8 @@
       $(document).ready(function(){
               $(".btnitem").click(function(){
                   alert(1);
-                $("#itmall").focus();
+             //   $("#itmall").focus();
+                $('html, body').animate({ scrollTop: $('#itmall').offset().top }, 'slow');
 
       
               });
