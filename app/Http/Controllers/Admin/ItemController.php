@@ -26,6 +26,7 @@ use Illuminate\Support\Facades\URL;
 use Illuminate\Validation\ValidationException;
 use Intervention\Image\Facades\Image;
 use Session;
+
 class ItemController extends Controller
 {
 
@@ -60,12 +61,10 @@ class ItemController extends Controller
 
         // filter categories
         $filter_categories = $request->filter_categories;
-        if(empty($filter_categories))
-        {
+        if (empty($filter_categories)) {
             $filter_categories = array();
 
-            foreach($all_printable_categories as $all_printable_categories_key => $printable_category)
-            {
+            foreach ($all_printable_categories as $all_printable_categories_key => $printable_category) {
                 $filter_categories[] = $printable_category['category_id'];
             }
         }
@@ -78,26 +77,22 @@ class ItemController extends Controller
         $all_countries = Country::orderBy('country_name')->get();
         $all_states = collect([]);
         $all_cities = collect([]);
-        if(!empty($filter_country))
-        {
+        if (!empty($filter_country)) {
             $country = Country::find($filter_country);
             $all_states = $country->states()->orderBy('state_name')->get();
         }
-        if(!empty($filter_state))
-        {
+        if (!empty($filter_state)) {
             $state = State::find($filter_state);
             $all_cities = $state->cities()->orderBy('city_name')->get();
         }
 
         // filter item status & featured
         $filter_item_status = $request->filter_item_status;
-        if(empty($filter_item_status))
-        {
+        if (empty($filter_item_status)) {
             $filter_item_status = array(Item::ITEM_SUBMITTED, Item::ITEM_PUBLISHED, Item::ITEM_SUSPENDED);
         }
         $filter_item_featured = $request->filter_item_featured;
-        if(empty($filter_item_featured))
-        {
+        if (empty($filter_item_featured)) {
             $filter_item_featured = array(Item::ITEM_FEATURED, Item::ITEM_NOT_FEATURED);
         }
 
@@ -122,16 +117,13 @@ class ItemController extends Controller
             ->whereIn("ci.category_id", $filter_categories);
 
         // location
-        if(!empty($filter_country))
-        {
+        if (!empty($filter_country)) {
             $items_query->where('items.country_id', $filter_country);
         }
-        if(!empty($filter_state))
-        {
+        if (!empty($filter_state)) {
             $items_query->where('items.state_id', $filter_state);
         }
-        if(!empty($filter_city))
-        {
+        if (!empty($filter_city)) {
             $items_query->where('items.city_id', $filter_city);
         }
 
@@ -142,28 +134,17 @@ class ItemController extends Controller
         $items_query->whereIn('items.item_featured', $filter_item_featured);
 
         // sort by
-        if($filter_sort_by == Item::ITEMS_SORT_BY_NEWEST_CREATED)
-        {
+        if ($filter_sort_by == Item::ITEMS_SORT_BY_NEWEST_CREATED) {
             $items_query->orderBy('items.created_at', 'DESC');
-        }
-        elseif($filter_sort_by == Item::ITEMS_SORT_BY_OLDEST_CREATED)
-        {
+        } elseif ($filter_sort_by == Item::ITEMS_SORT_BY_OLDEST_CREATED) {
             $items_query->orderBy('items.created_at', 'ASC');
-        }
-        elseif($filter_sort_by == Item::ITEMS_SORT_BY_NEWEST_UPDATED)
-        {
+        } elseif ($filter_sort_by == Item::ITEMS_SORT_BY_NEWEST_UPDATED) {
             $items_query->orderBy('items.updated_at', 'DESC');
-        }
-        elseif($filter_sort_by == Item::ITEMS_SORT_BY_OLDEST_UPDATED)
-        {
+        } elseif ($filter_sort_by == Item::ITEMS_SORT_BY_OLDEST_UPDATED) {
             $items_query->orderBy('items.updated_at', 'ASC');
-        }
-        elseif($filter_sort_by == Item::ITEMS_SORT_BY_HIGHEST_RATING)
-        {
+        } elseif ($filter_sort_by == Item::ITEMS_SORT_BY_HIGHEST_RATING) {
             $items_query->orderBy('items.item_average_rating', 'DESC');
-        }
-        elseif($filter_sort_by == Item::ITEMS_SORT_BY_LOWEST_RATING)
-        {
+        } elseif ($filter_sort_by == Item::ITEMS_SORT_BY_LOWEST_RATING) {
             $items_query->orderBy('items.item_average_rating', 'ASC');
         }
         /**
@@ -214,15 +195,13 @@ class ItemController extends Controller
 
         $category_ids = empty($request->category) ? array() : $request->category;
 
-        if(!empty($category_ids) && !is_array($category_ids))
-        {
+        if (!empty($category_ids) && !is_array($category_ids)) {
             return redirect()->back();
         }
 
         $all_customFields = collect();
 
-        if(count($category_ids) > 0)
-        {
+        if (count($category_ids) > 0) {
             $all_customFields = new CustomField();
             $all_customFields = $all_customFields->getDistinctCustomFieldsByCategories($category_ids);
         }
@@ -272,40 +251,37 @@ class ItemController extends Controller
             'item_social_linkedin' => 'nullable|url|max:255',
             'item_youtube_id' => 'nullable|max:255',
 //            'feature_image' => 'image|max:5120',
-//            'image_gallery.*' => 'image|max:5120',
+            //            'image_gallery.*' => 'image|max:5120',
         ];
 
         // validate category_ids
         $select_categories = $request->category;
+        if (count($select_categories) > 0) {
 
-
-        foreach($select_categories as $select_categories_key => $select_category)
-        {
-            $select_category = Category::find($select_category);
-            if(!$select_category)
-            {
-                throw ValidationException::withMessages(
-                    [
-                        'category' => __('prefer_country.category-not-found'),
-                    ]);
-            }
-
-            // prepare validate rule for custom fields
-            $custom_field_validation = array();
-            $custom_field_link = $select_category->allCustomFields()
-                ->where('custom_field_type', CustomField::TYPE_LINK)
-                ->get();
-
-            if($custom_field_link->count() > 0)
-            {
-                foreach($custom_field_link as $custom_field_link_key => $a_link)
-                {
-                    $custom_field_validation[str_slug($a_link->custom_field_name . $a_link->id)] = 'nullable|url';
+            foreach ($select_categories as $select_categories_key => $select_category) {
+                $select_category = Category::find($select_category);
+                if (!$select_category) {
+                    throw ValidationException::withMessages(
+                        [
+                            'category' => __('prefer_country.category-not-found'),
+                        ]);
                 }
+
+                // prepare validate rule for custom fields
+                $custom_field_validation = array();
+                $custom_field_link = $select_category->allCustomFields()
+                    ->where('custom_field_type', CustomField::TYPE_LINK)
+                    ->get();
+
+                if ($custom_field_link->count() > 0) {
+                    foreach ($custom_field_link as $custom_field_link_key => $a_link) {
+                        $custom_field_validation[str_slug($a_link->custom_field_name . $a_link->id)] = 'nullable|url';
+                    }
+                }
+
+                $validate_rule = array_merge($validate_rule, $custom_field_validation);
+
             }
-
-            $validate_rule = array_merge($validate_rule, $custom_field_validation);
-
         }
 
         // validate request
@@ -313,8 +289,7 @@ class ItemController extends Controller
 
         // validate country_id
         $select_country = Country::find($request->country_id);
-        if(!$select_country)
-        {
+        if (!$select_country) {
             throw ValidationException::withMessages(
                 [
                     'country_id' => __('prefer_country.country-not-found'),
@@ -323,8 +298,7 @@ class ItemController extends Controller
 
         // validate state_id
         $select_state = State::find($request->state_id);
-        if(!$select_state)
-        {
+        if (!$select_state) {
             throw ValidationException::withMessages(
                 [
                     'state_id' => __('prefer_country.state-not-found'),
@@ -332,8 +306,7 @@ class ItemController extends Controller
         }
         // validate city_id
         $select_city = City::find($request->city_id);
-        if(!$select_city)
-        {
+        if (!$select_city) {
             throw ValidationException::withMessages(
                 [
                     'city_id' => __('prefer_country.city-not-found'),
@@ -365,8 +338,7 @@ class ItemController extends Controller
         $item_youtube_id = $request->item_youtube_id;
 
         // guess lat and lng if empty
-        if(empty($item_lat) || empty($item_lng))
-        {
+        if (empty($item_lat) || empty($item_lng)) {
             $item_lat = $select_city->city_lat;
             $item_lng = $select_city->city_lng;
         }
@@ -384,11 +356,11 @@ class ItemController extends Controller
         $item_feature_image_name_small = null;
         $item_feature_image_name_tiny = null;
         $item_feature_image_name_blur = null;
-        if(!empty($feature_image)){
+        if (!empty($feature_image)) {
 
             $currentDate = Carbon::now()->toDateString();
 
-            $item_feature_image_name = $item_slug.'-'.$currentDate.'-'.uniqid().'.jpg';
+            $item_feature_image_name = $item_slug . '-' . $currentDate . '-' . uniqid() . '.jpg';
             $item_feature_image_name_medium = $item_slug . '-' . $currentDate . '-' . uniqid() . '-medium.jpg';
             $item_feature_image_name_small = $item_slug . '-' . $currentDate . '-' . uniqid() . '-small.jpg';
             $item_feature_image_name_tiny = $item_slug . '-' . $currentDate . '-' . uniqid() . '-tiny.jpg';
@@ -396,50 +368,49 @@ class ItemController extends Controller
             // blur feature image name
             $item_feature_image_name_blur = $item_slug . '-' . $currentDate . '-' . uniqid() . '-blur.jpg';
 
-            if(!Storage::disk('public')->exists('item')){
+            if (!Storage::disk('public')->exists('item')) {
                 Storage::disk('public')->makeDirectory('item');
             }
 
             // original size
-            $item_feature_image = Image::make(base64_decode(preg_replace('#^data:image/\w+;base64,#i', '',$feature_image)))->stream('jpg', 70);
-            Storage::disk('public')->put('item/'.$item_feature_image_name, $item_feature_image);
+            $item_feature_image = Image::make(base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $feature_image)))->stream('jpg', 70);
+            Storage::disk('public')->put('item/' . $item_feature_image_name, $item_feature_image);
 
             // medium size
-            $item_feature_image_medium = Image::make(base64_decode(preg_replace('#^data:image/\w+;base64,#i', '',$feature_image)))
-                ->resize(350, null, function($constraint) {
+            $item_feature_image_medium = Image::make(base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $feature_image)))
+                ->resize(350, null, function ($constraint) {
                     $constraint->aspectRatio();
                 });
             $item_feature_image_medium = $item_feature_image_medium->stream('jpg', 70);
-            Storage::disk('public')->put('item/'.$item_feature_image_name_medium, $item_feature_image_medium);
+            Storage::disk('public')->put('item/' . $item_feature_image_name_medium, $item_feature_image_medium);
 
             // small size
-            $item_feature_image_small = Image::make(base64_decode(preg_replace('#^data:image/\w+;base64,#i', '',$feature_image)))
-                ->resize(230, null, function($constraint) {
+            $item_feature_image_small = Image::make(base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $feature_image)))
+                ->resize(230, null, function ($constraint) {
                     $constraint->aspectRatio();
                 });
             $item_feature_image_small = $item_feature_image_small->stream('jpg', 70);
-            Storage::disk('public')->put('item/'.$item_feature_image_name_small, $item_feature_image_small);
+            Storage::disk('public')->put('item/' . $item_feature_image_name_small, $item_feature_image_small);
 
             // tiny size
-            $item_feature_image_tiny = Image::make(base64_decode(preg_replace('#^data:image/\w+;base64,#i', '',$feature_image)))
-                ->resize(160, null, function($constraint) {
+            $item_feature_image_tiny = Image::make(base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $feature_image)))
+                ->resize(160, null, function ($constraint) {
                     $constraint->aspectRatio();
                 });
             $item_feature_image_tiny = $item_feature_image_tiny->stream('jpg', 70);
-            Storage::disk('public')->put('item/'.$item_feature_image_name_tiny, $item_feature_image_tiny);
+            Storage::disk('public')->put('item/' . $item_feature_image_name_tiny, $item_feature_image_tiny);
 
             // blur feature image
-            $item_feature_image_blur = Image::make(base64_decode(preg_replace('#^data:image/\w+;base64,#i', '',$feature_image)));
+            $item_feature_image_blur = Image::make(base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $feature_image)));
             $item_feature_image_blur->blur(50);
             $item_feature_image_blur->stream('jpg', 70);
-            Storage::disk('public')->put('item/'.$item_feature_image_name_blur, $item_feature_image_blur);
+            Storage::disk('public')->put('item/' . $item_feature_image_name_blur, $item_feature_image_blur);
 
         }
 
         // start saving category string to item_categories_string column of items table
         $item_categories_string = "";
-        foreach($select_categories as $select_categories_key => $select_category)
-        {
+        foreach ($select_categories as $select_categories_key => $select_category) {
             $item_categories_string = $item_categories_string . " " . Category::find($select_category)->category_name;
         }
 
@@ -473,7 +444,6 @@ class ItemController extends Controller
             'item_social_linkedin' => $item_social_linkedin,
             'item_categories_string' => $item_categories_string,
             'lang' => Session::get('lang'),
-          
 
         ));
         $new_item->save();
@@ -484,18 +454,13 @@ class ItemController extends Controller
         $category_custom_fields = new CustomField();
         $category_custom_fields = $category_custom_fields->getDistinctCustomFieldsByCategories($select_categories);
 
-        if($category_custom_fields->count() > 0)
-        {
-            foreach($category_custom_fields as $category_custom_fields_key => $custom_field)
-            {
-                if($custom_field->custom_field_type == CustomField::TYPE_MULTI_SELECT)
-                {
+        if ($category_custom_fields->count() > 0) {
+            foreach ($category_custom_fields as $category_custom_fields_key => $custom_field) {
+                if ($custom_field->custom_field_type == CustomField::TYPE_MULTI_SELECT) {
                     $multi_select_values = $request->get(str_slug($custom_field->custom_field_name . $custom_field->id), '');
                     $multi_select_str = '';
-                    if(is_array($multi_select_values))
-                    {
-                        foreach($multi_select_values as $multi_select_values_key => $value)
-                        {
+                    if (is_array($multi_select_values)) {
+                        foreach ($multi_select_values as $multi_select_values_key => $value) {
                             $multi_select_str .= $value . ', ';
                         }
                     }
@@ -503,9 +468,7 @@ class ItemController extends Controller
                         'custom_field_id' => $custom_field->id,
                         'item_feature_value' => empty($multi_select_str) ? '' : substr(trim($multi_select_str), 0, -1),
                     ));
-                }
-                else
-                {
+                } else {
                     $new_item_feature = new ItemFeature(array(
                         'custom_field_id' => $custom_field->id,
                         'item_feature_value' => $request->get(str_slug($custom_field->custom_field_name . $custom_field->id), ''),
@@ -521,37 +484,34 @@ class ItemController extends Controller
 
         // start to upload image galleries
         $image_gallary = $request->image_gallery;
-        if(is_array($image_gallary) && count($image_gallary) > 0)
-        {
-            foreach($image_gallary as $image_gallary_key => $image)
-            {
+        if (is_array($image_gallary) && count($image_gallary) > 0) {
+            foreach ($image_gallary as $image_gallary_key => $image) {
                 // only total 12 images are allowed
-                if($image_gallary_key < 12)
-                {
+                if ($image_gallary_key < 12) {
                     $currentDate = Carbon::now()->toDateString();
                     $item_image_gallery_uniqid = uniqid();
 
-                    $item_image_gallery['item_image_gallery_name'] = 'gallary-'.$currentDate.'-'.$item_image_gallery_uniqid.'.jpg';
-                    $item_image_gallery['item_image_gallery_thumb_name'] = 'gallary-'.$currentDate.'-'.$item_image_gallery_uniqid.'-thumb.jpg';
+                    $item_image_gallery['item_image_gallery_name'] = 'gallary-' . $currentDate . '-' . $item_image_gallery_uniqid . '.jpg';
+                    $item_image_gallery['item_image_gallery_thumb_name'] = 'gallary-' . $currentDate . '-' . $item_image_gallery_uniqid . '-thumb.jpg';
 
                     //$item_image_gallery['item_image_gallery_size'] = $image->getClientSize();
                     //$item_image_gallery['property_id'] = $created_item->id;
 
-                    if(!Storage::disk('public')->exists('item/gallery')){
+                    if (!Storage::disk('public')->exists('item/gallery')) {
                         Storage::disk('public')->makeDirectory('item/gallery');
                     }
 
                     // original
-                    $one_gallery_image = Image::make(base64_decode(preg_replace('#^data:image/\w+;base64,#i', '',$image)))->stream('jpg', 80);
-                    Storage::disk('public')->put('item/gallery/'.$item_image_gallery['item_image_gallery_name'], $one_gallery_image);
+                    $one_gallery_image = Image::make(base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $image)))->stream('jpg', 80);
+                    Storage::disk('public')->put('item/gallery/' . $item_image_gallery['item_image_gallery_name'], $one_gallery_image);
 
                     // thumb size
-                    $one_gallery_image_thumb = Image::make(base64_decode(preg_replace('#^data:image/\w+;base64,#i', '',$image)))
-                        ->resize(null, 180, function($constraint) {
+                    $one_gallery_image_thumb = Image::make(base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $image)))
+                        ->resize(null, 180, function ($constraint) {
                             $constraint->aspectRatio();
                         });
                     $one_gallery_image_thumb = $one_gallery_image_thumb->stream('jpg', 70);
-                    Storage::disk('public')->put('item/gallery/'.$item_image_gallery['item_image_gallery_thumb_name'], $one_gallery_image_thumb);
+                    Storage::disk('public')->put('item/gallery/' . $item_image_gallery['item_image_gallery_thumb_name'], $one_gallery_image_thumb);
 
                     $created_item_image_gallery = $new_item->galleries()->create($item_image_gallery);
                 }
@@ -615,8 +575,7 @@ class ItemController extends Controller
         // get all custom fields based on the categories of the item
         $categories = $item->allCategories()->get();
         $category_ids = array();
-        foreach($categories as $key => $category)
-        {
+        foreach ($categories as $key => $category) {
             $category_ids[] = $category->id;
         }
 
@@ -626,8 +585,7 @@ class ItemController extends Controller
             ->get();
 
         $select_custom_field = array();
-        foreach($custom_field_ids as $key => $custom_field_id)
-        {
+        foreach ($custom_field_ids as $key => $custom_field_id) {
             $select_custom_field[] = $custom_field_id->custom_field_id;
         }
 
@@ -661,13 +619,11 @@ class ItemController extends Controller
             ->where('id', '!=', $item->id)
             ->get()->count();
 
-        if($item_slug_exist > 0)
-        {
+        if ($item_slug_exist > 0) {
             $validate_error['item_slug'] = __('item_slug.alert.item-slug-exist');
         }
 
-        if(count($validate_error) > 0)
-        {
+        if (count($validate_error) > 0) {
             throw ValidationException::withMessages($validate_error);
         }
 
@@ -698,18 +654,14 @@ class ItemController extends Controller
 
         $item_categories_string = "";
 
-        foreach($select_categories as $key => $select_category)
-        {
+        foreach ($select_categories as $key => $select_category) {
             $select_category = Category::find($select_category);
-            if(!$select_category)
-            {
+            if (!$select_category) {
                 throw ValidationException::withMessages(
                     [
                         'category' => 'Category not found',
                     ]);
-            }
-            else
-            {
+            } else {
                 $item_categories_string = $item_categories_string . " " . $select_category->category_name;
             }
         }
@@ -720,8 +672,7 @@ class ItemController extends Controller
         // start saving item_categories_string
         $item->item_categories_string = $item_categories_string;
 
-        if(!Auth::user()->isAdmin())
-        {
+        if (!Auth::user()->isAdmin()) {
             // if the user is regular user, then need approve this item category update
             $item->item_status = Item::ITEM_SUBMITTED;
         }
@@ -761,23 +712,20 @@ class ItemController extends Controller
             'item_social_linkedin' => 'nullable|url|max:255',
             'item_youtube_id' => 'nullable|max:255',
 //            'feature_image' => 'image|max:5120',
-//            'image_gallery.*' => 'image|max:5120',
+            //            'image_gallery.*' => 'image|max:5120',
         ];
 
         // prepare validate rule for custom fields
         $select_categories = $item->allCategories()->get();
 
-        foreach($select_categories as $select_categories_key => $select_category)
-        {
+        foreach ($select_categories as $select_categories_key => $select_category) {
             $custom_field_validation = array();
             $custom_field_link = $select_category->allCustomFields()
                 ->where('custom_field_type', CustomField::TYPE_LINK)
                 ->get();
 
-            if($custom_field_link->count() > 0)
-            {
-                foreach($custom_field_link as $custom_field_link_key => $a_link)
-                {
+            if ($custom_field_link->count() > 0) {
+                foreach ($custom_field_link as $custom_field_link_key => $a_link) {
                     $custom_field_validation[str_slug($a_link->custom_field_name . $a_link->id)] = 'nullable|url';
                 }
             }
@@ -790,8 +738,7 @@ class ItemController extends Controller
 
         // validate country_id
         $select_country = Country::find($request->country_id);
-        if(!$select_country)
-        {
+        if (!$select_country) {
             throw ValidationException::withMessages(
                 [
                     'country_id' => __('prefer_country.country-not-found'),
@@ -800,8 +747,7 @@ class ItemController extends Controller
 
         // validate state_id
         $select_state = State::find($request->state_id);
-        if(!$select_state)
-        {
+        if (!$select_state) {
             throw ValidationException::withMessages(
                 [
                     'state_id' => __('prefer_country.state-not-found'),
@@ -809,8 +755,7 @@ class ItemController extends Controller
         }
         // validate city_id
         $select_city = City::find($request->city_id);
-        if(!$select_city)
-        {
+        if (!$select_city) {
             throw ValidationException::withMessages(
                 [
                     'city_id' => __('prefer_country.city-not-found'),
@@ -837,8 +782,7 @@ class ItemController extends Controller
         $item_youtube_id = $request->item_youtube_id;
 
         // guess lat and lng if empty
-        if(empty($item_lat) || empty($item_lng))
-        {
+        if (empty($item_lat) || empty($item_lng)) {
             $item_lat = $select_city->city_lat;
             $item_lng = $select_city->city_lng;
         }
@@ -856,7 +800,7 @@ class ItemController extends Controller
         $item_feature_image_name_small = $item->item_image_small;
         $item_feature_image_name_tiny = $item->item_image_tiny;
         $item_feature_image_name_blur = $item->item_image_blur;
-        if(!empty($feature_image)){
+        if (!empty($feature_image)) {
 
             $currentDate = Carbon::now()->toDateString();
 
@@ -868,10 +812,10 @@ class ItemController extends Controller
             // blur feature image name
             $item_feature_image_name_blur = $item->item_slug . '-' . $currentDate . '-' . uniqid() . '-blur.jpg';
 
-            if(!Storage::disk('public')->exists('item')){
+            if (!Storage::disk('public')->exists('item')) {
                 Storage::disk('public')->makeDirectory('item');
             }
-            if(Storage::disk('public')->exists('item/' . $item->item_image)){
+            if (Storage::disk('public')->exists('item/' . $item->item_image)) {
 
                 Storage::disk('public')->delete('item/' . $item->item_image);
                 Storage::disk('public')->delete('item/' . $item->item_image_medium);
@@ -882,49 +826,48 @@ class ItemController extends Controller
             }
 
             // original size
-            $item_feature_image = Image::make(base64_decode(preg_replace('#^data:image/\w+;base64,#i', '',$feature_image)))->stream('jpg', 70);
+            $item_feature_image = Image::make(base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $feature_image)))->stream('jpg', 70);
             //$item_feature_image = Image::make(base64_decode(preg_replace('#^data:image/\w+;base64,#i', '',$feature_image)))->encode('webp', 70);
-            Storage::disk('public')->put('item/'.$item_feature_image_name, $item_feature_image);
+            Storage::disk('public')->put('item/' . $item_feature_image_name, $item_feature_image);
 
             // medium size
-            $item_feature_image_medium = Image::make(base64_decode(preg_replace('#^data:image/\w+;base64,#i', '',$feature_image)))
-                ->resize(350, null, function($constraint) {
+            $item_feature_image_medium = Image::make(base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $feature_image)))
+                ->resize(350, null, function ($constraint) {
                     $constraint->aspectRatio();
                 });
             $item_feature_image_medium = $item_feature_image_medium->stream('jpg', 70);
             //$item_feature_image_medium = $item_feature_image_medium->encode('webp', 70);
-            Storage::disk('public')->put('item/'.$item_feature_image_name_medium, $item_feature_image_medium);
+            Storage::disk('public')->put('item/' . $item_feature_image_name_medium, $item_feature_image_medium);
 
             // small size
-            $item_feature_image_small = Image::make(base64_decode(preg_replace('#^data:image/\w+;base64,#i', '',$feature_image)))
-                ->resize(230, null, function($constraint) {
+            $item_feature_image_small = Image::make(base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $feature_image)))
+                ->resize(230, null, function ($constraint) {
                     $constraint->aspectRatio();
                 });
             $item_feature_image_small = $item_feature_image_small->stream('jpg', 70);
             //$item_feature_image_small = $item_feature_image_small->encode('webp', 70);
-            Storage::disk('public')->put('item/'.$item_feature_image_name_small, $item_feature_image_small);
+            Storage::disk('public')->put('item/' . $item_feature_image_name_small, $item_feature_image_small);
 
             // tiny size
-            $item_feature_image_tiny = Image::make(base64_decode(preg_replace('#^data:image/\w+;base64,#i', '',$feature_image)))
-                ->resize(160, null, function($constraint) {
+            $item_feature_image_tiny = Image::make(base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $feature_image)))
+                ->resize(160, null, function ($constraint) {
                     $constraint->aspectRatio();
                 });
             $item_feature_image_tiny = $item_feature_image_tiny->stream('jpg', 70);
             //$item_feature_image_tiny = $item_feature_image_tiny->encode('webp', 70);
-            Storage::disk('public')->put('item/'.$item_feature_image_name_tiny, $item_feature_image_tiny);
+            Storage::disk('public')->put('item/' . $item_feature_image_name_tiny, $item_feature_image_tiny);
 
             // blur feature image
-            $item_feature_image_blur = Image::make(base64_decode(preg_replace('#^data:image/\w+;base64,#i', '',$feature_image)));
+            $item_feature_image_blur = Image::make(base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $feature_image)));
             $item_feature_image_blur->blur(50);
             $item_feature_image_blur->stream('jpg', 70);
             //$item_feature_image_blur->encode('webp', 70);
-            Storage::disk('public')->put('item/'.$item_feature_image_name_blur, $item_feature_image_blur);
+            Storage::disk('public')->put('item/' . $item_feature_image_name_blur, $item_feature_image_blur);
         }
 
         // start saving category string to item_categories_string column of items table
         $item_categories_string = "";
-        foreach($select_categories as $select_categories_key => $select_category)
-        {
+        foreach ($select_categories as $select_categories_key => $select_category) {
             $item_categories_string = $item_categories_string . " " . $select_category->category_name;
         }
 
@@ -960,7 +903,7 @@ class ItemController extends Controller
 
         $item->item_features_string = null;
         $item->item_categories_string = $item_categories_string;
-        $item->lang =Session::get('lang');
+        $item->lang = Session::get('lang');
         $item->save();
 
         // start to save custom fields data
@@ -968,8 +911,7 @@ class ItemController extends Controller
 
         $item_categories = $item->allCategories()->get();
         $select_categories = array();
-        foreach($item_categories as $item_categories_key => $item_category)
-        {
+        foreach ($item_categories as $item_categories_key => $item_category) {
             $select_categories[] = $item_category->id;
         }
 
@@ -978,18 +920,13 @@ class ItemController extends Controller
 
         //$category_custom_fields = $select_category->customFields()->orderBy('custom_field_order')->get();
 
-        if($category_custom_fields->count() > 0)
-        {
-            foreach($category_custom_fields as $category_custom_fields_key => $custom_field)
-            {
-                if($custom_field->custom_field_type == CustomField::TYPE_MULTI_SELECT)
-                {
+        if ($category_custom_fields->count() > 0) {
+            foreach ($category_custom_fields as $category_custom_fields_key => $custom_field) {
+                if ($custom_field->custom_field_type == CustomField::TYPE_MULTI_SELECT) {
                     $multi_select_values = $request->get(str_slug($custom_field->custom_field_name . $custom_field->id), '');
                     $multi_select_str = '';
-                    if(is_array($multi_select_values))
-                    {
-                        foreach($multi_select_values as $multi_select_values_key => $value)
-                        {
+                    if (is_array($multi_select_values)) {
+                        foreach ($multi_select_values as $multi_select_values_key => $value) {
                             $multi_select_str .= $value . ', ';
                         }
                     }
@@ -997,9 +934,7 @@ class ItemController extends Controller
                         'custom_field_id' => $custom_field->id,
                         'item_feature_value' => empty($multi_select_str) ? '' : substr(trim($multi_select_str), 0, -1),
                     ));
-                }
-                else
-                {
+                } else {
                     $new_item_feature = new ItemFeature(array(
                         'custom_field_id' => $custom_field->id,
                         'item_feature_value' => $request->get(str_slug($custom_field->custom_field_name . $custom_field->id), ''),
@@ -1015,37 +950,34 @@ class ItemController extends Controller
 
         // start to upload image galleries
         $image_gallary = $request->image_gallery;
-        if(is_array($image_gallary) && count($image_gallary) > 0)
-        {
+        if (is_array($image_gallary) && count($image_gallary) > 0) {
             $total_item_image_gallery = $item->galleries()->get()->count();
-            foreach($image_gallary as $image_gallary_key => $image)
-            {
+            foreach ($image_gallary as $image_gallary_key => $image) {
                 // only total 12 images are allowed
-                if($total_item_image_gallery + $image_gallary_key < 12)
-                {
+                if ($total_item_image_gallery + $image_gallary_key < 12) {
                     $currentDate = Carbon::now()->toDateString();
                     $item_image_gallery_uniqid = uniqid();
 
-                    $item_image_gallery['item_image_gallery_name'] = 'gallary-'.$currentDate.'-'.$item_image_gallery_uniqid.'.jpg';
-                    $item_image_gallery['item_image_gallery_thumb_name'] = 'gallary-'.$currentDate.'-'.$item_image_gallery_uniqid.'-thumb.jpg';
+                    $item_image_gallery['item_image_gallery_name'] = 'gallary-' . $currentDate . '-' . $item_image_gallery_uniqid . '.jpg';
+                    $item_image_gallery['item_image_gallery_thumb_name'] = 'gallary-' . $currentDate . '-' . $item_image_gallery_uniqid . '-thumb.jpg';
                     //$item_image_gallery['item_image_gallery_size'] = $image->getClientSize();
                     //$item_image_gallery['property_id'] = $created_item->id;
 
-                    if(!Storage::disk('public')->exists('item/gallery')){
+                    if (!Storage::disk('public')->exists('item/gallery')) {
                         Storage::disk('public')->makeDirectory('item/gallery');
                     }
 
                     // original
-                    $one_gallery_image = Image::make(base64_decode(preg_replace('#^data:image/\w+;base64,#i', '',$image)))->stream('jpg', 80);
-                    Storage::disk('public')->put('item/gallery/'.$item_image_gallery['item_image_gallery_name'], $one_gallery_image);
+                    $one_gallery_image = Image::make(base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $image)))->stream('jpg', 80);
+                    Storage::disk('public')->put('item/gallery/' . $item_image_gallery['item_image_gallery_name'], $one_gallery_image);
 
                     // thumb size
-                    $one_gallery_image_thumb = Image::make(base64_decode(preg_replace('#^data:image/\w+;base64,#i', '',$image)))
-                        ->resize(null, 180, function($constraint) {
+                    $one_gallery_image_thumb = Image::make(base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $image)))
+                        ->resize(null, 180, function ($constraint) {
                             $constraint->aspectRatio();
                         });
                     $one_gallery_image_thumb = $one_gallery_image_thumb->stream('jpg', 70);
-                    Storage::disk('public')->put('item/gallery/'.$item_image_gallery['item_image_gallery_thumb_name'], $one_gallery_image_thumb);
+                    Storage::disk('public')->put('item/gallery/' . $item_image_gallery['item_image_gallery_thumb_name'], $one_gallery_image_thumb);
 
                     $created_item_image_gallery = $item->galleries()->create($item_image_gallery);
                 }
@@ -1077,51 +1009,42 @@ class ItemController extends Controller
 
     public function approveItem(Item $item)
     {
-        if(Auth::user()->isAdmin() || Auth::user()->id == $item->user_id)
-        {
+        if (Auth::user()->isAdmin() || Auth::user()->id == $item->user_id) {
             $item->setApproved();
 
             \Session::flash('flash_message', __('alert.item-approved'));
             \Session::flash('flash_type', 'success');
 
             return redirect()->route('admin.items.edit', $item);
-        }
-        else
-        {
+        } else {
             return redirect()->route('admin.items.index');
         }
     }
 
     public function disApproveItem(Item $item)
     {
-        if(Auth::user()->isAdmin() || Auth::user()->id == $item->user_id)
-        {
+        if (Auth::user()->isAdmin() || Auth::user()->id == $item->user_id) {
             $item->setDisapproved();
 
             \Session::flash('flash_message', __('alert.item-disapproved'));
             \Session::flash('flash_type', 'success');
 
             return redirect()->route('admin.items.edit', $item);
-        }
-        else
-        {
+        } else {
             return redirect()->route('admin.items.index');
         }
     }
 
     public function suspendItem(Item $item)
     {
-        if(Auth::user()->isAdmin() || Auth::user()->id == $item->user_id)
-        {
+        if (Auth::user()->isAdmin() || Auth::user()->id == $item->user_id) {
             $item->setSuspended();
 
             \Session::flash('flash_message', __('alert.item-suspended'));
             \Session::flash('flash_type', 'success');
 
             return redirect()->route('admin.items.edit', $item);
-        }
-        else
-        {
+        } else {
             return redirect()->route('admin.items.index');
         }
     }
@@ -1155,33 +1078,27 @@ class ItemController extends Controller
         //$site_prefer_country_id = app('site_prefer_country_id');
 
         $item = Item::where('item_slug', $item_slug)
-            //->where('country_id', $site_prefer_country_id)
+        //->where('country_id', $site_prefer_country_id)
             ->where('item_status', Item::ITEM_PUBLISHED)
             ->get()->first();
 
-        if($item)
-        {
+        if ($item) {
             $login_user = Auth::user();
 
-            if($login_user->hasSavedItem($item->id))
-            {
+            if ($login_user->hasSavedItem($item->id)) {
                 $login_user->savedItems()->detach($item->id);
 
                 \Session::flash('flash_message', __('backend.item.unsave-item-success'));
                 \Session::flash('flash_type', 'success');
 
                 return redirect()->route('admin.items.saved');
-            }
-            else
-            {
+            } else {
                 \Session::flash('flash_message', __('backend.item.unsave-item-error-exist'));
                 \Session::flash('flash_type', 'danger');
 
                 return redirect()->route('admin.items.saved');
             }
-        }
-        else
-        {
+        } else {
             abort(404);
         }
 
@@ -1208,29 +1125,23 @@ class ItemController extends Controller
          */
 
         $item = Item::where('item_slug', $item_slug)
-            //->where('country_id', $site_prefer_country_id)
+        //->where('country_id', $site_prefer_country_id)
             ->where('item_status', Item::ITEM_PUBLISHED)
             ->where('user_id', '!=', Auth::user()->id)
             ->get()->first();
 
-        if($item)
-        {
-            if($item->reviewedByUser(Auth::user()->id))
-            {
+        if ($item) {
+            if ($item->reviewedByUser(Auth::user()->id)) {
                 \Session::flash('flash_message', __('review.alert.cannot-post-more-one-review'));
                 \Session::flash('flash_type', 'danger');
 
                 return redirect()->route('page.item', $item->item_slug);
-            }
-            else
-            {
+            } else {
                 return response()->view('backend.admin.item.review.create',
                     compact('item'));
             }
 
-        }
-        else
-        {
+        } else {
             abort(404);
         }
     }
@@ -1241,22 +1152,18 @@ class ItemController extends Controller
         //$site_prefer_country_id = app('site_prefer_country_id');
 
         $item = Item::where('item_slug', $item_slug)
-            //->where('country_id', $site_prefer_country_id)
+        //->where('country_id', $site_prefer_country_id)
             ->where('item_status', Item::ITEM_PUBLISHED)
             ->where('user_id', '!=', Auth::user()->id)
             ->get()->first();
 
-        if($item)
-        {
-            if($item->reviewedByUser(Auth::user()->id))
-            {
+        if ($item) {
+            if ($item->reviewedByUser(Auth::user()->id)) {
                 \Session::flash('flash_message', __('review.alert.cannot-post-more-one-review'));
                 \Session::flash('flash_type', 'danger');
 
                 return redirect()->route('page.item', $item->item_slug);
-            }
-            else
-            {
+            } else {
                 $request->validate([
                     'rating' => 'required|numeric|max:5',
                     'customer_service_rating' => 'required|numeric|max:5',
@@ -1296,34 +1203,31 @@ class ItemController extends Controller
 
                 // start to upload image galleries
                 $image_gallary = $request->review_image_galleries;
-                if(is_array($image_gallary) && count($image_gallary) > 0)
-                {
-                    foreach($image_gallary as $key => $image)
-                    {
+                if (is_array($image_gallary) && count($image_gallary) > 0) {
+                    foreach ($image_gallary as $key => $image) {
                         // only total 12 images are allowed
-                        if($key < 12)
-                        {
+                        if ($key < 12) {
                             $currentDate = Carbon::now()->toDateString();
                             $review_image_gallery_uniqid = uniqid();
 
-                            $review_image_gallery['review_image_gallery_name'] = 'review-gallary-'.$currentDate.'-'.$review_image_gallery_uniqid.'.jpg';
-                            $review_image_gallery['review_image_gallery_thumb_name'] = 'review-gallary-'.$currentDate.'-'.$review_image_gallery_uniqid.'-thumb.jpg';
+                            $review_image_gallery['review_image_gallery_name'] = 'review-gallary-' . $currentDate . '-' . $review_image_gallery_uniqid . '.jpg';
+                            $review_image_gallery['review_image_gallery_thumb_name'] = 'review-gallary-' . $currentDate . '-' . $review_image_gallery_uniqid . '-thumb.jpg';
 
-                            if(!Storage::disk('public')->exists('item/review')){
+                            if (!Storage::disk('public')->exists('item/review')) {
                                 Storage::disk('public')->makeDirectory('item/review');
                             }
 
                             // original
-                            $one_gallery_image = Image::make(base64_decode(preg_replace('#^data:image/\w+;base64,#i', '',$image)))->stream('jpg', 80);
-                            Storage::disk('public')->put('item/review/'.$review_image_gallery['review_image_gallery_name'], $one_gallery_image);
+                            $one_gallery_image = Image::make(base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $image)))->stream('jpg', 80);
+                            Storage::disk('public')->put('item/review/' . $review_image_gallery['review_image_gallery_name'], $one_gallery_image);
 
                             // thumb size
-                            $one_gallery_image_thumb = Image::make(base64_decode(preg_replace('#^data:image/\w+;base64,#i', '',$image)))
-                                ->resize(150, null, function($constraint) {
+                            $one_gallery_image_thumb = Image::make(base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $image)))
+                                ->resize(150, null, function ($constraint) {
                                     $constraint->aspectRatio();
                                 });
                             $one_gallery_image_thumb = $one_gallery_image_thumb->stream('jpg', 70);
-                            Storage::disk('public')->put('item/review/'.$review_image_gallery['review_image_gallery_thumb_name'], $one_gallery_image_thumb);
+                            Storage::disk('public')->put('item/review/' . $review_image_gallery['review_image_gallery_thumb_name'], $one_gallery_image_thumb);
 
                             // insert review image galleries record to review_image_galleries table
                             $item->insertReviewGalleriesByReviewId($new_rating->id,
@@ -1339,9 +1243,7 @@ class ItemController extends Controller
                 return redirect()->route('admin.items.reviews.edit', ['item_slug' => $item->item_slug, 'review' => $new_rating->id]);
             }
 
-        }
-        else
-        {
+        } else {
             abort(404);
         }
     }
@@ -1363,29 +1265,23 @@ class ItemController extends Controller
          */
 
         $item = Item::where('item_slug', $item_slug)
-            //->where('country_id', $site_prefer_country_id)
+        //->where('country_id', $site_prefer_country_id)
             ->where('item_status', Item::ITEM_PUBLISHED)
             ->where('user_id', '!=', Auth::user()->id)
             ->get()->first();
 
-        if($item)
-        {
-            if($item->hasReviewByIdAndUser($review, Auth::user()->id))
-            {
+        if ($item) {
+            if ($item->hasReviewByIdAndUser($review, Auth::user()->id)) {
                 $review = $item->getReviewById($review);
 
                 $review_image_galleries = $item->getReviewGalleriesByReviewId($review->id);
 
                 return response()->view('backend.admin.item.review.edit',
                     compact('item', 'review', 'review_image_galleries'));
-            }
-            else
-            {
+            } else {
                 abort(404);
             }
-        }
-        else
-        {
+        } else {
             abort(404);
         }
     }
@@ -1396,15 +1292,13 @@ class ItemController extends Controller
         //$site_prefer_country_id = app('site_prefer_country_id');
 
         $item = Item::where('item_slug', $item_slug)
-            //->where('country_id', $site_prefer_country_id)
+        //->where('country_id', $site_prefer_country_id)
             ->where('item_status', Item::ITEM_PUBLISHED)
             ->where('user_id', '!=', Auth::user()->id)
             ->get()->first();
 
-        if($item)
-        {
-            if($item->hasReviewByIdAndUser($review, Auth::user()->id))
-            {
+        if ($item) {
+            if ($item->hasReviewByIdAndUser($review, Auth::user()->id)) {
                 $request->validate([
                     'rating' => 'required|numeric|max:5',
                     'customer_service_rating' => 'required|numeric|max:5',
@@ -1444,35 +1338,32 @@ class ItemController extends Controller
 
                 // start to upload image galleries
                 $image_gallary = $request->review_image_galleries;
-                if(is_array($image_gallary) && count($image_gallary) > 0)
-                {
+                if (is_array($image_gallary) && count($image_gallary) > 0) {
                     $total_review_image_gallery = $item->reviewGalleryCountByReviewId($review);
-                    foreach($image_gallary as $key => $image)
-                    {
+                    foreach ($image_gallary as $key => $image) {
                         // only total 12 images are allowed
-                        if($total_review_image_gallery + $key < 12)
-                        {
+                        if ($total_review_image_gallery + $key < 12) {
                             $currentDate = Carbon::now()->toDateString();
                             $review_image_gallery_uniqid = uniqid();
 
-                            $review_image_gallery['review_image_gallery_name'] = 'review-gallary-'.$currentDate.'-'.$review_image_gallery_uniqid.'.jpg';
-                            $review_image_gallery['review_image_gallery_thumb_name'] = 'review-gallary-'.$currentDate.'-'.$review_image_gallery_uniqid.'-thumb.jpg';
+                            $review_image_gallery['review_image_gallery_name'] = 'review-gallary-' . $currentDate . '-' . $review_image_gallery_uniqid . '.jpg';
+                            $review_image_gallery['review_image_gallery_thumb_name'] = 'review-gallary-' . $currentDate . '-' . $review_image_gallery_uniqid . '-thumb.jpg';
 
-                            if(!Storage::disk('public')->exists('item/review')){
+                            if (!Storage::disk('public')->exists('item/review')) {
                                 Storage::disk('public')->makeDirectory('item/review');
                             }
 
                             // original
-                            $one_gallery_image = Image::make(base64_decode(preg_replace('#^data:image/\w+;base64,#i', '',$image)))->stream('jpg', 80);
-                            Storage::disk('public')->put('item/review/'.$review_image_gallery['review_image_gallery_name'], $one_gallery_image);
+                            $one_gallery_image = Image::make(base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $image)))->stream('jpg', 80);
+                            Storage::disk('public')->put('item/review/' . $review_image_gallery['review_image_gallery_name'], $one_gallery_image);
 
                             // thumb size
-                            $one_gallery_image_thumb = Image::make(base64_decode(preg_replace('#^data:image/\w+;base64,#i', '',$image)))
-                                ->resize(150, null, function($constraint) {
+                            $one_gallery_image_thumb = Image::make(base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $image)))
+                                ->resize(150, null, function ($constraint) {
                                     $constraint->aspectRatio();
                                 });
                             $one_gallery_image_thumb = $one_gallery_image_thumb->stream('jpg', 70);
-                            Storage::disk('public')->put('item/review/'.$review_image_gallery['review_image_gallery_thumb_name'], $one_gallery_image_thumb);
+                            Storage::disk('public')->put('item/review/' . $review_image_gallery['review_image_gallery_thumb_name'], $one_gallery_image_thumb);
 
                             // insert review image galleries record to review_image_galleries table
                             $item->insertReviewGalleriesByReviewId($updated_rating->id,
@@ -1486,14 +1377,10 @@ class ItemController extends Controller
                 \Session::flash('flash_type', 'success');
 
                 return redirect()->route('admin.items.reviews.edit', ['item_slug' => $item->item_slug, 'review' => $updated_rating->id]);
-            }
-            else
-            {
+            } else {
                 abort(404);
             }
-        }
-        else
-        {
+        } else {
             abort(404);
         }
     }
@@ -1504,15 +1391,13 @@ class ItemController extends Controller
         //$site_prefer_country_id = app('site_prefer_country_id');
 
         $item = Item::where('item_slug', $item_slug)
-            //->where('country_id', $site_prefer_country_id)
+        //->where('country_id', $site_prefer_country_id)
             ->where('item_status', Item::ITEM_PUBLISHED)
             ->where('user_id', '!=', Auth::user()->id)
             ->get()->first();
 
-        if($item)
-        {
-            if($item->hasReviewByIdAndUser($review, Auth::user()->id))
-            {
+        if ($item) {
+            if ($item->hasReviewByIdAndUser($review, Auth::user()->id)) {
                 $item->deleteRating($review);
 
                 // sync item_average_rating in item table
@@ -1522,14 +1407,10 @@ class ItemController extends Controller
                 \Session::flash('flash_type', 'success');
 
                 return redirect()->route('admin.items.reviews.index');
-            }
-            else
-            {
+            } else {
                 abort(404);
             }
-        }
-        else
-        {
+        } else {
             abort(404);
         }
     }
@@ -1551,32 +1432,26 @@ class ItemController extends Controller
 
         $reviews_type = $request->reviews_type;
 
-        if(empty($reviews_type) || $reviews_type == 'all')
-        {
+        if (empty($reviews_type) || $reviews_type == 'all') {
             $reviews = DB::table('reviews')
                 ->orderBy('updated_at', 'desc')
                 ->get();
-        }
-        else
-        {
-            if($reviews_type == 'pending')
-            {
+        } else {
+            if ($reviews_type == 'pending') {
                 $reviews = DB::table('reviews')
                     ->where('approved', Item::ITEM_REVIEW_PENDING)
                     ->orderBy('updated_at', 'desc')
                     ->get();
             }
 
-            if($reviews_type == 'approved')
-            {
+            if ($reviews_type == 'approved') {
                 $reviews = DB::table('reviews')
                     ->where('approved', Item::ITEM_REVIEW_APPROVED)
                     ->orderBy('updated_at', 'desc')
                     ->get();
             }
 
-            if($reviews_type == 'me')
-            {
+            if ($reviews_type == 'me') {
                 $reviews = DB::table('reviews')
                     ->where('author_id', Auth::user()->id)
                     ->orderBy('updated_at', 'desc')
@@ -1608,8 +1483,7 @@ class ItemController extends Controller
             ->where('id', $review_id)
             ->get()->first();
 
-        if($review)
-        {
+        if ($review) {
             $item_id = $review->reviewrateable_id;
             $item = Item::findOrFail($item_id);
 
@@ -1617,9 +1491,7 @@ class ItemController extends Controller
 
             return response()->view('backend.admin.item.review.show',
                 compact('item', 'review', 'review_image_galleries'));
-        }
-        else
-        {
+        } else {
             abort(404);
         }
     }
@@ -1630,16 +1502,14 @@ class ItemController extends Controller
             ->where('id', $review_id)
             ->get()->first();
 
-        if($review)
-        {
+        if ($review) {
             DB::table('reviews')
                 ->where('id', $review_id)
                 ->update(['approved' => Item::ITEM_REVIEW_APPROVED]);
 
             $item = Item::find($review->reviewrateable_id);
 
-            if($item)
-            {
+            if ($item) {
                 $item->syncItemAverageRating();
             }
 
@@ -1647,9 +1517,7 @@ class ItemController extends Controller
             \Session::flash('flash_type', 'success');
 
             return redirect()->route('admin.items.reviews.show', ['review_id' => $review->id]);
-        }
-        else
-        {
+        } else {
             abort(404);
         }
 
@@ -1661,16 +1529,14 @@ class ItemController extends Controller
             ->where('id', $review_id)
             ->get()->first();
 
-        if($review)
-        {
+        if ($review) {
             DB::table('reviews')
                 ->where('id', $review_id)
                 ->update(['approved' => Item::ITEM_REVIEW_PENDING]);
 
             $item = Item::find($review->reviewrateable_id);
 
-            if($item)
-            {
+            if ($item) {
                 $item->syncItemAverageRating();
             }
 
@@ -1678,9 +1544,7 @@ class ItemController extends Controller
             \Session::flash('flash_type', 'success');
 
             return redirect()->route('admin.items.reviews.show', ['review_id' => $review->id]);
-        }
-        else
-        {
+        } else {
             abort(404);
         }
 
@@ -1693,16 +1557,14 @@ class ItemController extends Controller
             ->where('id', $review_id)
             ->get()->first();
 
-        if($review)
-        {
+        if ($review) {
             $item = Item::find($review->reviewrateable_id);
 
             DB::table('reviews')
                 ->where('id', $review_id)
                 ->delete();
 
-            if($item)
-            {
+            if ($item) {
                 $item->syncItemAverageRating();
             }
 
@@ -1710,9 +1572,7 @@ class ItemController extends Controller
             \Session::flash('flash_type', 'success');
 
             return redirect()->route('admin.items.reviews.index');
-        }
-        else
-        {
+        } else {
             abort(404);
         }
 
@@ -1853,15 +1713,12 @@ class ItemController extends Controller
          */
 
         // Validate item and item_section relation
-        if($item_section->item_id != $item->id)
-        {
+        if ($item_section->item_id != $item->id) {
             \Session::flash('flash_message', __('item_section.alert.item-section-not-match-item'));
             \Session::flash('flash_type', 'danger');
 
             return redirect()->route('admin.items.sections.index', ['item' => $item]);
-        }
-        else
-        {
+        } else {
             $all_item_section_collections = $item_section->itemSectionCollections()
                 ->orderBy('item_section_collection_order')
                 ->get();
@@ -1878,8 +1735,7 @@ class ItemController extends Controller
                 ->get();
 
             $collected_product_ids = array();
-            foreach($item_section_collection_collected_products as $key => $item_section_collection_collected_product)
-            {
+            foreach ($item_section_collection_collected_products as $key => $item_section_collection_collected_product) {
                 $collected_product_ids[] = $item_section_collection_collected_product->item_section_collection_collectible_id;
             }
 
@@ -1895,7 +1751,7 @@ class ItemController extends Controller
 
             return response()->view('backend.admin.item.item-section.edit',
                 compact('item', 'item_section', 'all_item_section_collections',
-                        'item_has_claimed', 'item_claimed_user', 'available_products', 'product_currency_symbol'));
+                    'item_has_claimed', 'item_claimed_user', 'available_products', 'product_currency_symbol'));
         }
     }
 
@@ -1910,8 +1766,7 @@ class ItemController extends Controller
     public function updateItemSection(Request $request, Item $item, ItemSection $item_section)
     {
         // Validate item and item_section relation
-        if($item_section->item_id != $item->id)
-        {
+        if ($item_section->item_id != $item->id) {
             \Session::flash('flash_message', __('item_section.alert.item-section-not-match-item'));
             \Session::flash('flash_type', 'danger');
 
@@ -1937,8 +1792,7 @@ class ItemController extends Controller
         $item_section_order = $item_section->item_section_order;
 
         // check if position has updated
-        if($item_section->item_section_position != $item_section_position)
-        {
+        if ($item_section->item_section_position != $item_section_position) {
             // the item section has updated to a new position, so we need to
             // update the item_section_order based on the new position
             $item_section_order = $item->itemSections()->where('item_section_position', $item_section_position)->get()->count() + 1;
@@ -1949,8 +1803,7 @@ class ItemController extends Controller
                 ->where('item_section_order', '>', $item_section->item_section_order)
                 ->get();
 
-            foreach($re_order_item_sections as $key => $re_order_item_section)
-            {
+            foreach ($re_order_item_sections as $key => $re_order_item_section) {
                 $re_order_item_section->item_section_order = $re_order_item_section->item_section_order - 1;
                 $re_order_item_section->save();
             }
@@ -1969,7 +1822,6 @@ class ItemController extends Controller
         return redirect()->route('admin.items.sections.edit', ['item' => $item, 'item_section' => $item_section->id]);
     }
 
-
     /**
      * Delete an item section
      *
@@ -1982,8 +1834,7 @@ class ItemController extends Controller
     public function destroyItemSection(Request $request, Item $item, ItemSection $item_section)
     {
         // Validate item and item_section relation
-        if($item_section->item_id != $item->id)
-        {
+        if ($item_section->item_id != $item->id) {
             \Session::flash('flash_message', __('item_section.alert.item-section-not-match-item'));
             \Session::flash('flash_type', 'danger');
 
@@ -1993,8 +1844,7 @@ class ItemController extends Controller
         // #1 - delete all item_section's collections
         $all_item_section_collections = $item_section->itemSectionCollections()->get();
 
-        foreach($all_item_section_collections as $key => $item_section_collection)
-        {
+        foreach ($all_item_section_collections as $key => $item_section_collection) {
             $item_section_collection->delete();
         }
 
@@ -2005,8 +1855,7 @@ class ItemController extends Controller
             ->orderBy('item_section_order')
             ->get();
 
-        foreach($item_sections as $key => $section)
-        {
+        foreach ($item_sections as $key => $section) {
             $section->item_section_order = intval($section->item_section_order) - 1;
             $section->save();
         }
@@ -2020,7 +1869,6 @@ class ItemController extends Controller
         return redirect()->route('admin.items.sections.index', ['item' => $item]);
     }
 
-
     /**
      * Rank up the item section
      *
@@ -2032,8 +1880,7 @@ class ItemController extends Controller
     public function rankUpItemSection(Request $request, Item $item, ItemSection $item_section)
     {
         // Validate item and item_section relation
-        if($item_section->item_id != $item->id)
-        {
+        if ($item_section->item_id != $item->id) {
             \Session::flash('flash_message', __('item_section.alert.item-section-not-match-item'));
             \Session::flash('flash_type', 'danger');
 
@@ -2044,16 +1891,15 @@ class ItemController extends Controller
 
         $move_down_item_section = $item->itemSections()
             ->where('item_section_position', $item_section->item_section_position)
-            ->where('item_section_order', $old_rank-1)
+            ->where('item_section_order', $old_rank - 1)
             ->get();
 
-        if($move_down_item_section->count() > 0)
-        {
+        if ($move_down_item_section->count() > 0) {
             $move_down_item_section = $move_down_item_section->first();
             $move_down_item_section->item_section_order = $old_rank;
             $move_down_item_section->save();
 
-            $item_section->item_section_order = $old_rank-1;
+            $item_section->item_section_order = $old_rank - 1;
             $item_section->save();
         }
 
@@ -2074,8 +1920,7 @@ class ItemController extends Controller
     public function rankDownItemSection(Request $request, Item $item, ItemSection $item_section)
     {
         // Validate item and item_section relation
-        if($item_section->item_id != $item->id)
-        {
+        if ($item_section->item_id != $item->id) {
             \Session::flash('flash_message', __('item_section.alert.item-section-not-match-item'));
             \Session::flash('flash_type', 'danger');
 
@@ -2086,16 +1931,15 @@ class ItemController extends Controller
 
         $move_up_item_section = $item->itemSections()
             ->where('item_section_position', $item_section->item_section_position)
-            ->where('item_section_order', $old_rank+1)
+            ->where('item_section_order', $old_rank + 1)
             ->get();
 
-        if($move_up_item_section->count() > 0)
-        {
+        if ($move_up_item_section->count() > 0) {
             $move_up_item_section = $move_up_item_section->first();
             $move_up_item_section->item_section_order = $old_rank;
             $move_up_item_section->save();
 
-            $item_section->item_section_order = $old_rank+1;
+            $item_section->item_section_order = $old_rank + 1;
             $item_section->save();
         }
 
@@ -2118,8 +1962,7 @@ class ItemController extends Controller
     public function storeItemSectionCollections(Request $request, Item $item, ItemSection $item_section)
     {
         // Validate item and item_section relation
-        if($item_section->item_id != $item->id)
-        {
+        if ($item_section->item_id != $item->id) {
             \Session::flash('flash_message', __('item_section.alert.item-section-not-match-item'));
             \Session::flash('flash_type', 'danger');
 
@@ -2143,31 +1986,23 @@ class ItemController extends Controller
         $available_item_section_collection_collectible_types = array(
             ItemSectionCollection::COLLECTIBLE_TYPE_PRODUCT,
         );
-        if(!in_array($item_section_collection_collectible_type, $available_item_section_collection_collectible_types))
-        {
+        if (!in_array($item_section_collection_collectible_type, $available_item_section_collection_collectible_types)) {
             $validate_error['item_section_collection_collectible_id'] = __('item_section.alert.item-section-collection-collectible-type-not-exist');
         }
 
-        foreach($item_section_collection_collectible_ids as $key => $item_section_collection_collectible_id)
-        {
-            if($item_section_collection_collectible_type == ItemSectionCollection::COLLECTIBLE_TYPE_PRODUCT)
-            {
+        foreach ($item_section_collection_collectible_ids as $key => $item_section_collection_collectible_id) {
+            if ($item_section_collection_collectible_type == ItemSectionCollection::COLLECTIBLE_TYPE_PRODUCT) {
                 $product_exist = Product::find($item_section_collection_collectible_id);
-                if(!$product_exist)
-                {
+                if (!$product_exist) {
                     $validate_error['item_section_collection_collectible_id'] = __('item_section.alert.product-not-exist');
-                }
-                else
-                {
-                    if($product_exist->user_id != $item->user_id)
-                    {
+                } else {
+                    if ($product_exist->user_id != $item->user_id) {
                         $validate_error['item_section_collection_collectible_id'] = __('item_section.alert.not-product-owner');
                     }
                 }
             }
         }
-        if(count($validate_error) > 0)
-        {
+        if (count($validate_error) > 0) {
             throw ValidationException::withMessages($validate_error);
         }
         /**
@@ -2179,10 +2014,9 @@ class ItemController extends Controller
          */
         $item_section_collections_count = $item_section->itemSectionCollections()->get()->count();
 
-        foreach($item_section_collection_collectible_ids as $key => $collection_id)
-        {
+        foreach ($item_section_collection_collectible_ids as $key => $collection_id) {
             $new_item_section_collection = new ItemSectionCollection(array(
-                'item_section_collection_order' => $item_section_collections_count + ($key +1),
+                'item_section_collection_order' => $item_section_collections_count + ($key + 1),
                 'item_section_collection_collectible_type' => $item_section_collection_collectible_type,
                 'item_section_collection_collectible_id' => $collection_id,
             ));
@@ -2209,13 +2043,11 @@ class ItemController extends Controller
      * @return RedirectResponse
      */
     public function rankUpItemSectionCollection(Request $request,
-                                                Item $item,
-                                                ItemSection $item_section,
-                                                ItemSectionCollection $item_section_collection)
-    {
+        Item $item,
+        ItemSection $item_section,
+        ItemSectionCollection $item_section_collection) {
         // Validate item and item_section relation
-        if($item_section->item_id != $item->id)
-        {
+        if ($item_section->item_id != $item->id) {
             \Session::flash('flash_message', __('item_section.alert.item-section-not-match-item'));
             \Session::flash('flash_type', 'danger');
 
@@ -2223,8 +2055,7 @@ class ItemController extends Controller
         }
 
         // Validate item_section and item_section_collection relation
-        if($item_section_collection->item_section_id != $item_section->id)
-        {
+        if ($item_section_collection->item_section_id != $item_section->id) {
             \Session::flash('flash_message', __('item_section.alert.item-section-collection-not-match-item-section'));
             \Session::flash('flash_type', 'danger');
 
@@ -2234,16 +2065,15 @@ class ItemController extends Controller
         $old_rank = intval($item_section_collection->item_section_collection_order);
 
         $move_down_item_section_collection = $item_section->itemSectionCollections()
-            ->where('item_section_collection_order', $old_rank-1)
+            ->where('item_section_collection_order', $old_rank - 1)
             ->get();
 
-        if($move_down_item_section_collection->count() > 0)
-        {
+        if ($move_down_item_section_collection->count() > 0) {
             $move_down_item_section_collection = $move_down_item_section_collection->first();
             $move_down_item_section_collection->item_section_collection_order = $old_rank;
             $move_down_item_section_collection->save();
 
-            $item_section_collection->item_section_collection_order = $old_rank-1;
+            $item_section_collection->item_section_collection_order = $old_rank - 1;
             $item_section_collection->save();
         }
 
@@ -2263,13 +2093,11 @@ class ItemController extends Controller
      * @return RedirectResponse
      */
     public function rankDownItemSectionCollection(Request $request,
-                                                  Item $item,
-                                                  ItemSection $item_section,
-                                                  ItemSectionCollection $item_section_collection)
-    {
+        Item $item,
+        ItemSection $item_section,
+        ItemSectionCollection $item_section_collection) {
         // Validate item and item_section relation
-        if($item_section->item_id != $item->id)
-        {
+        if ($item_section->item_id != $item->id) {
             \Session::flash('flash_message', __('item_section.alert.item-section-not-match-item'));
             \Session::flash('flash_type', 'danger');
 
@@ -2277,8 +2105,7 @@ class ItemController extends Controller
         }
 
         // Validate item_section and item_section_collection relation
-        if($item_section_collection->item_section_id != $item_section->id)
-        {
+        if ($item_section_collection->item_section_id != $item_section->id) {
             \Session::flash('flash_message', __('item_section.alert.item-section-collection-not-match-item-section'));
             \Session::flash('flash_type', 'danger');
 
@@ -2288,16 +2115,15 @@ class ItemController extends Controller
         $old_rank = intval($item_section_collection->item_section_collection_order);
 
         $move_up_item_section_collection = $item_section->itemSectionCollections()
-            ->where('item_section_collection_order', $old_rank+1)
+            ->where('item_section_collection_order', $old_rank + 1)
             ->get();
 
-        if($move_up_item_section_collection->count() > 0)
-        {
+        if ($move_up_item_section_collection->count() > 0) {
             $move_up_item_section_collection = $move_up_item_section_collection->first();
             $move_up_item_section_collection->item_section_collection_order = $old_rank;
             $move_up_item_section_collection->save();
 
-            $item_section_collection->item_section_collection_order = $old_rank+1;
+            $item_section_collection->item_section_collection_order = $old_rank + 1;
             $item_section_collection->save();
         }
 
@@ -2307,15 +2133,12 @@ class ItemController extends Controller
         return redirect()->route('admin.items.sections.edit', ['item' => $item, 'item_section' => $item_section]);
     }
 
-
     public function destroyItemSectionCollection(Request $request,
-                                                 Item $item,
-                                                 ItemSection $item_section,
-                                                 ItemSectionCollection $item_section_collection)
-    {
+        Item $item,
+        ItemSection $item_section,
+        ItemSectionCollection $item_section_collection) {
         // Validate item and item_section relation
-        if($item_section->item_id != $item->id)
-        {
+        if ($item_section->item_id != $item->id) {
             \Session::flash('flash_message', __('item_section.alert.item-section-not-match-item'));
             \Session::flash('flash_type', 'danger');
 
@@ -2323,8 +2146,7 @@ class ItemController extends Controller
         }
 
         // Validate item_section and item_section_collection relation
-        if($item_section_collection->item_section_id != $item_section->id)
-        {
+        if ($item_section_collection->item_section_id != $item_section->id) {
             \Session::flash('flash_message', __('item_section.alert.item-section-collection-not-match-item-section'));
             \Session::flash('flash_type', 'danger');
 
@@ -2336,8 +2158,7 @@ class ItemController extends Controller
             ->where('item_section_collection_order', '>', $item_section_collection->item_section_collection_order)
             ->get();
 
-        foreach($re_order_item_section_collections as $key => $collection)
-        {
+        foreach ($re_order_item_section_collections as $key => $collection) {
             $collection->item_section_collection_order = $collection->item_section_collection_order - 1;
             $collection->save();
         }
@@ -2359,12 +2180,10 @@ class ItemController extends Controller
 
         $item_ids = $request->item_id;
 
-        foreach($item_ids as $item_ids_key => $a_item_id)
-        {
+        foreach ($item_ids as $item_ids_key => $a_item_id) {
             $item = Item::find($a_item_id);
 
-            if($item)
-            {
+            if ($item) {
                 $item->setApproved();
             }
         }
@@ -2383,12 +2202,10 @@ class ItemController extends Controller
 
         $item_ids = $request->item_id;
 
-        foreach($item_ids as $item_ids_key => $a_item_id)
-        {
+        foreach ($item_ids as $item_ids_key => $a_item_id) {
             $item = Item::find($a_item_id);
 
-            if($item)
-            {
+            if ($item) {
                 $item->setDisapproved();
             }
         }
@@ -2407,12 +2224,10 @@ class ItemController extends Controller
 
         $item_ids = $request->item_id;
 
-        foreach($item_ids as $item_ids_key => $a_item_id)
-        {
+        foreach ($item_ids as $item_ids_key => $a_item_id) {
             $item = Item::find($a_item_id);
 
-            if($item)
-            {
+            if ($item) {
                 $item->setSuspended();
             }
         }
@@ -2431,12 +2246,10 @@ class ItemController extends Controller
 
         $item_ids = $request->item_id;
 
-        foreach($item_ids as $item_ids_key => $a_item_id)
-        {
+        foreach ($item_ids as $item_ids_key => $a_item_id) {
             $item = Item::find($a_item_id);
 
-            if($item)
-            {
+            if ($item) {
                 $item->deleteItem();
             }
         }
