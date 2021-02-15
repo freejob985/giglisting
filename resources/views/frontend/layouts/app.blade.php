@@ -43,7 +43,7 @@
 
     @yield('styles')
 @if (Session::get('lang')=="ar")
-  //rtl arabic
+  {{--  //rtl arabic  --}}
 <style>
     *{
         direction: rtl !important;
