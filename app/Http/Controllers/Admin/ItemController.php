@@ -277,6 +277,7 @@ class ItemController extends Controller
 
         // validate category_ids
         $select_categories = $request->category;
+        dd($select_categories);
 
         foreach($select_categories as $select_categories_key => $select_category)
         {
