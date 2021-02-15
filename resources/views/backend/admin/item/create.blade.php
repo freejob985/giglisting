@@ -42,7 +42,7 @@
                             <span class="text-lg text-gray-800">{{ __('backend.item.select-category') }}</span>
                             <form class="form-inline" action="{{ route('admin.items.create') }}" method="GET">
                                 <div class="form-group mr-2">
-                                    <select multiple size="{{ count($all_categories) }}" class="custom-select @error('category') is-invalid @enderror" name="category[]" onchange="$('#item-create-form').remove();">
+                                    <select multiple size="{{ count($all_categories) }}#itmall" class="custom-select @error('category') is-invalid @enderror" name="category[]" onchange="$('#item-create-form').remove();">
                                         @foreach($all_categories as $key => $category)
                                             <option value="{{ $category['category_id'] }}" {{ in_array($category['category_id'], empty($category_ids) ? array() : $category_ids) ? 'selected' : '' }}>{{ $category['category_name'] }}</option>
                                         @endforeach
@@ -60,7 +60,7 @@
                 </div>
             </div>
 
-            <div class="row">
+            <div class="row itmall">
                 <div class="col-12">
                     @if(is_array($category_ids) && count($category_ids) > 0)
                     <form method="POST" action="{{ route('admin.items.store') }}" id="item-create-form">
