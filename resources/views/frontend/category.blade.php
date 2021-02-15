@@ -33,9 +33,7 @@
                     <div class="row justify-content-center mt-5">
                         <div class="col-md-8 text-center">
                             <h1 style="color: {{ $site_innerpage_header_title_font_color }};">{{ $category->category_name }}</h1>
-                            <p class="mb-0" style="color: {{ $site_innerpage_header_paragraph_font_color }}; " style="
-                            display: none;
-                        ">{{ $category->category_description }}</p>
+                  
                         </div>
                     </div>
 
