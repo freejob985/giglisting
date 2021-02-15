@@ -61,6 +61,25 @@
                                     <span class="icon"><span><i class="fas fa-heart"></i></span></span>
                                 @endif
 
+
+
+
+                                @if ($children_category->Type=="Link")
+                                <span class="icon"><span><img class="img-responsive" src="{{ $children_category->Link }}" alt="Chania"></span></span>
+                                @elseif ($children_category->Type=="photo")
+                                <span class="icon"><span><img class="img-responsive" src="{{Request::root()}}/laravel_project/public/files/{{ $children_category->photo }}" alt="Chania"></span></span>
+                                @else
+                                @if($children_category->category_icon)
+                                <span class="icon"><span><i class="{{ $children_category->category_icon }}"></i></span></span>
+                                @else
+                                <span class="icon"><span><i class="fas fa-heart"></i></span></span>
+                                @endif
+                                @endif
+                                <span class="caption mb-2 d-block">{{ $children_category->category_name }}</span>
+                             
+
+
+
                                 <span class="caption mb-2 d-block">{{ $children_category->category_name }}</span>
                             </a>
                         </div>
