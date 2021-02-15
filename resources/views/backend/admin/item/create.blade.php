@@ -68,7 +68,7 @@
         <div class="row " id="itmall">
             <div class="col-12">
           
-                <form method="POST" action="{{ route('admin.items.store') }}" id="item-create-form">
+                <form method="POST" action="{{ route('admin.items.store') }}" >
                     @csrf
 
                     <hr />
