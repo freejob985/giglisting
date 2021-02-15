@@ -53,7 +53,7 @@
                                     </span>
                                     @enderror
                                 </div>
-                                <button type="submit" class="btn btn-primary mr-2">{{ __('backend.item.load-form') }}</button>
+                                <button type="submit" class="btn btnitem btn-primary mr-2">{{ __('backend.item.load-form') }}</button>
                             </form>
                         </div>
                     </div>
@@ -812,4 +812,16 @@
         <script async defer src="https://maps.googleapis.com/maps/api/js??v=quarterly&key={{ $site_global_settings->setting_site_map_google_api_key }}&callback=initMap"></script>
     @endif
 
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script>
+      $(document).ready(function(){
+              $(".btnitem").click(function(){
+                $("#itmall").focus();
+
+      
+              });
+            });
+    </script>
+
+    
 @endsection
