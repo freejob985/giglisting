@@ -899,7 +899,7 @@
              //   $("#itmall").focus();
                 $('html, body').animate({ scrollTop: $('#itmall').offset().top }, 'slow');
 
-      return false;
+    //  return false;
               });
             });
 </script>
