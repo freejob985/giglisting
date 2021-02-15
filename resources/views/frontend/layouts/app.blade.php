@@ -42,6 +42,17 @@
     @endif
 
     @yield('styles')
+@if (Session::get('lang')=="ar")
+  //rtl arabic
+<style>
+    *{
+        direction: rtl !important;
+        text-align: right!important;
+    }
+</style>
+@endif
+
+
 
     @if(is_demo_mode())
         <style>

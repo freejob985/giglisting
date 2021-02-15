@@ -94,7 +94,9 @@
                             </a>
                         </div>
                     @endforeach
-                        <div class="col-sm-6 col-md-4 mb-4 mb-lg-0 col-lg-2">
+                        <div class="col-sm-6 col-md-4 mb-4 mb-lg-0 col-lg-2" style="
+                        display: none;
+                    ">
                             <a href="{{ route('page.categories') }}" class="popular-category h-100">
 
                                 <span class="icon"><span><i class="fas fa-th"></i></span></span>

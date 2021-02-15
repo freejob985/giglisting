@@ -53,15 +53,22 @@
                 <div class="row align-items-stretch no-gutters">
                     @foreach( $children_categories as $key => $children_category )
                         <div class="col-sm-6 col-md-4 mb-4 mb-lg-0 col-lg-2">
-                            <a href="{{ route('page.category', $children_category->category_slug) }}" class="popular-category h-100">
-
-                                @if($children_category->category_icon)
-                                    <span class="icon"><span><i class="{{ $children_category->category_icon }}"></i></span></span>
+                            <a href="{{ route('page.category', $category->category_slug) }}"
+                                class="popular-category h-100">
+                                @if ($category->Type=="Link")
+                                <span class="icon"><span><img class="img-responsive" src="{{ $category->Link }}" alt="Chania"></span></span>
+                                @elseif ($category->Type=="photo")
+                                <span class="icon"><span><img class="img-responsive" src="{{Request::root()}}/laravel_project/public/files/{{ $category->photo }}" alt="Chania"></span></span>
                                 @else
-                                    <span class="icon"><span><i class="fas fa-heart"></i></span></span>
+                                @if($category->category_icon)
+                                <span class="icon"><span><i class="{{ $category->category_icon }}"></i></span></span>
+                                @else
+                                <span class="icon"><span><i class="fas fa-heart"></i></span></span>
                                 @endif
-
-                                <span class="caption mb-2 d-block">{{ $children_category->category_name }}</span>
+                                @endif
+                                <span class="caption mb-2 d-block">{{ $category->category_name }}</span>
+                                <span
+                                    class="number">{{ number_format($category->getItemsCount($site_prefer_country_id)) }}</span>
                             </a>
                         </div>
                     @endforeach
