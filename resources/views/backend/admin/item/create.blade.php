@@ -816,6 +816,7 @@
     <script>
       $(document).ready(function(){
               $(".btnitem").click(function(){
+                  alert(1);
                 $("#itmall").focus();
 
       
