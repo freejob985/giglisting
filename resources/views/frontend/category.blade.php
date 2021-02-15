@@ -55,12 +55,7 @@
                         <div class="col-sm-6 col-md-4 mb-4 mb-lg-0 col-lg-2">
                             <a href="{{ route('page.category', $children_category->category_slug) }}" class="popular-category h-100">
 
-                                @if($children_category->category_icon)
-                                    <span class="icon"><span><i class="{{ $children_category->category_icon }}"></i></span></span>
-                                @else
-                                    <span class="icon"><span><i class="fas fa-heart"></i></span></span>
-                                @endif
-
+                               
 
 
 
@@ -80,7 +75,6 @@
 
 
 
-                                <span class="caption mb-2 d-block">{{ $children_category->category_name }}</span>
                             </a>
                         </div>
                     @endforeach
