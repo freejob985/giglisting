@@ -60,7 +60,7 @@
                 </div>
             </div>
 
-            <div class="row itmall">
+            <div class="row " id="itmall">
                 <div class="col-12">
                     @if(is_array($category_ids) && count($category_ids) > 0)
                     <form method="POST" action="{{ route('admin.items.store') }}" id="item-create-form">
