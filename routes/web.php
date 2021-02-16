@@ -61,7 +61,7 @@ Route::middleware(['installed','demo','global_variables'])->group(function () {
     /**
      * Public routes
      */
-    Route::get('/', 'PagesController@index')->name('page.home');
+    Route::get('/', 'PagesController@index')->name('page.home')->middleware(['lang']);;
 
     Route::get('/search', 'PagesController@search')->name('page.search');
     Route::post('/search', 'PagesController@doSearch')->name('page.search.do');

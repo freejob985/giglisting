@@ -67,6 +67,7 @@ class Kernel extends HttpKernel
         'demo' => \App\Http\Middleware\DemoMiddleware::class,
         'locale' => \App\Http\Middleware\InitialLocale::class,
         'global_variables' => \App\Http\Middleware\GlobalVariablesMiddleware::class,
+        'lang' => \App\Http\Middleware\lang::class,
     ];
 
     /**
