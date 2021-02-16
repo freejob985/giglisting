@@ -64,7 +64,7 @@
                                     features and advantages that GIG brings to you",Session::get('lang')) }}</a>
                             </li>
                             <li>
-                                <a href="https://gigworldgo.com/p/80/our-services2">Our Services</a>
+                                <a href="https://gigworldgo.com/p/80/our-services2">{{ \App\Setting::lang("Our Services",Session::get('lang')) }}</a>
                             </li>
                             <li>
                                 <a href="https://gigworldgo.com/team">{{ \App\Setting::lang("Team",Session::get('lang')) }}</a>
