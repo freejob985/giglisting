@@ -63,16 +63,16 @@ Route::middleware(['installed','demo','global_variables'])->group(function () {
      */
     Route::get('/', 'PagesController@index')->name('page.home')->middleware(['lang']);;
 
-    Route::get('/search', 'PagesController@search')->name('page.search');
-    Route::post('/search', 'PagesController@doSearch')->name('page.search.do');
+    Route::get('/search', 'PagesController@search')->name('page.search')->middleware(['lang']);;
+    Route::post('/search', 'PagesController@doSearch')->name('page.search.do')->middleware(['lang']);;
 
-    Route::get('/about', 'PagesController@about')->name('page.about');
-    Route::get('/contact', 'PagesController@contact')->name('page.contact');
+    Route::get('/about', 'PagesController@about')->name('page.about')->middleware(['lang']);;
+    Route::get('/contact', 'PagesController@contact')->name('page.contact')->middleware(['lang']);;
     Route::post('/contact', 'PagesController@doContact')->name('page.contact.do');
 
-    Route::get('/categories', 'PagesController@categories')->name('page.categories');
-    Route::get('/category/{category_slug}', 'PagesController@category')->name('page.category');
-    Route::get('/category/{category_slug}/state/{state_slug}', 'PagesController@categoryByState')->name('page.category.state');
+    Route::get('/categories', 'PagesController@categories')->name('page.categories')->middleware(['lang']);;
+    Route::get('/category/{category_slug}', 'PagesController@category')->name('page.category')->middleware(['lang']);;
+    Route::get('/category/{category_slug}/state/{state_slug}', 'PagesController@categoryByState')->name('page.category.state')->middleware(['lang']);;
     Route::get('/category/{category_slug}/state/{state_slug}/city/{city_slug}', 'PagesController@categoryByStateCity')->name('page.category.state.city');
 
     Route::get('/state/{state_slug}', 'PagesController@state')->name('page.state');
