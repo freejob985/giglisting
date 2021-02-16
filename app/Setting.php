@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use DB;
 
 class Setting extends Model
 {
@@ -32,8 +33,16 @@ class Setting extends Model
         'es',
         'bg',
 
-
     );
+
+    function lang($val, $lan)
+    {
+     //   {{ \App\Setting::lang("","") }}
+        $lang = DB::table('lang')->where('key', $val)->where('lang', $lan)->value('val');
+        dd($lang);
+        return  $lang; 
+
+    }
 
     const SITE_HEADER_ENABLED = 1;
     const SITE_HEADER_DISABLED = 0;
