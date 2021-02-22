@@ -424,7 +424,7 @@ class ItemController extends Controller
             'item_featured' => $item_featured,
             'item_featured_by_admin' => $item_featured_by_admin,
             'item_title' => $item_title,
-            'category' => $request->category[0],
+            'category_id' => $request->category[0],
             'item_slug' => $item_slug,
             'item_description' => $item_description,
             'item_image' => $item_feature_image_name,
