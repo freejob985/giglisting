@@ -90,7 +90,7 @@
                                 @endif
                                 <span class="caption mb-2 d-block">{{ $category->category_name }}</span>
                                 <span
-                                    class="number">{{ number_format($category->getItemsCount($site_prefer_country_id)) }}</span>
+                                    class="number">{{ DB::table('items')->where('category_id', $category->category_id)->count() }}</span>
                             </a>
                         </div>
                     @endforeach
@@ -135,7 +135,7 @@
                                 @endif
                                 <span class="caption mb-2 d-block">{{ $category->category_name }}</span>
                                 <span
-                                    class="number">{{ number_format($category->getItemsCount($site_prefer_country_id)) }}</span>
+                                    class="number">{{ DB::table('items')->where('category_id', $category->category_id)->count() }}</span>
                             </a>
                         </div>
                     @endforeach
