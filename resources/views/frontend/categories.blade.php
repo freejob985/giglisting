@@ -84,7 +84,7 @@
                                     @endif
                                     <span class="caption mb-2 d-block">{{ $category->category_name }}</span>
                                     <span
-                                        class="number">{{ DB::table('items')->where('category_id', $category->category_id)->count() }}</span>
+                                        class="number">{{ DB::table('items')->where('lang',Session::get('lang'))->where('category_id', $category->category_id)->count() }}</span>
                                 </a>
                             </div>
                             @endforeach
