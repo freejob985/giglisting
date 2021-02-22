@@ -179,7 +179,7 @@ class ItemController extends Controller
     {
 
 
-        //dd($request->all());
+        dd($request->all());
         $settings = app('site_global_settings');
 
         /**
