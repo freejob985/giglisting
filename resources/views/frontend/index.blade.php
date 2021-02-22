@@ -90,7 +90,7 @@
                                 @endif
                                 <span class="caption mb-2 d-block">{{ $category->category_name }}</span>
                                 <span
-                                    class="number">{{ DB::table('items')->where('lang',Session::get('lang'))->where('category_id', $category->category_id)->count() }}</span>
+                                    class="number">{{ number_format($category->getItemsCount($site_prefer_country_id)) }}</span>
                             </a>
                         </div>
                     @endforeach
@@ -135,7 +135,7 @@
                                 @endif
                                 <span class="caption mb-2 d-block">{{ $category->category_name }}</span>
                                 <span
-                                    class="number">{{ DB::table('items')->where('lang',Session::get('lang'))->where('category_id', $category->category_id)->count() }}</span>
+                                    class="number">{{ number_format($category->getItemsCount($site_prefer_country_id)) }}</span>
                             </a>
                         </div>
                     @endforeach
@@ -429,7 +429,7 @@
 </div>
 
 @if(count($all_testimonials))
-<div class="site-section bg-white">
+<div class="site-section bg-white" style="display:none;">
     <div class="container">
 
         <div class="row justify-content-center mb-5">
