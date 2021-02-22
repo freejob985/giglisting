@@ -234,7 +234,7 @@ class ItemController extends Controller
      */
     public function store(Request $request)
     {
-       // dd($request->all());
+        dd($request->all());
         // prepare rule for general information
         $validate_rule = [
             'category' => 'required',
